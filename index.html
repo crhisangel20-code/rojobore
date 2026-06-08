@@ -6,223 +6,667 @@
   <title>Rojobore · Guía oficial de la Chiquitanía boliviana</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
     :root {
-      --bg-dark: #0A0F0D;
-      --surface: #141E1A;
-      --card-bg: #1E2A25;
-      --neon-green: #39FF14;
-      --gold: #FFD700;
-      --accent-dark: #0B3B2F;
-      --text-light: #E0F2E9;
-      --text-muted: #A3C4B6;
-      --border-glow: rgba(57, 255, 20, 0.3);
-      --red-passion: #E62E3C;
-      --blue-neon: #1E90FF;
-      --violet-neon: #BF40FF;
-      --font-display: 'Playfair Display', serif;
-      --font: 'DM Sans', sans-serif;
-      --radius: 20px;
+      --bg: #F2F7F2;
+      --card: #FFFFFF;
+      --accent: #2D6A4F;
+      --accent2: #40916C;
+      --gold: #74C69D;
+      --text: #1B3A2D;
+      --text-soft: #52796F;
+      --border: #D8EAE0;
+      --radius: 16px;
       --sidebar-w: 72px;
-      --sidebar-w-open: 240px;
+      --sidebar-w-open: 220px;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font: 'DM Sans', system-ui, sans-serif;
+      --green-dark: #1B4332;
+      --green-mid: #2D6A4F;
+      --green-light: #52B788;
+      --green-pale: #D8F3DC;
     }
-    body{
-      background: var(--bg-dark);
-      color: var(--text-light);
-      font-family: var(--font);
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-    /* scroll personalizado */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #1A2A24; }
-    ::-webkit-scrollbar-thumb { background: var(--neon-green); border-radius: 8px; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.45;height:100%;width:100%;overflow:hidden;}
 
-    /* SIDEBAR */
+    /* ===== SIDEBAR ===== */
     .sidebar {
-      position:fixed; left:0; top:0; bottom:0; width:var(--sidebar-w);
-      background:rgba(10,15,13,0.96); backdrop-filter:blur(16px); z-index:2000;
-      display:flex; flex-direction:column; align-items:center; padding:1rem 0;
-      transition:width 0.3s cubic-bezier(.4,0,.2,1); overflow:hidden;
-      border-right:1px solid var(--border-glow); box-shadow:4px 0 30px rgba(0,0,0,0.5);
+      position:fixed;
+      left:0; top:0; bottom:0;
+      width:var(--sidebar-w);
+      background:rgba(27,67,50,0.97);
+      backdrop-filter:blur(20px);
+      z-index:2000;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:1rem 0;
+      gap:0;
+      transition:width 0.3s cubic-bezier(.4,0,.2,1);
+      overflow:hidden;
+      border-right:1px solid rgba(116,198,157,0.2);
     }
     .sidebar.open { width:var(--sidebar-w-open); align-items:flex-start; }
     .sidebar-logo {
-      font-family:var(--font-display); font-size:1.2rem; font-weight:900;
-      color:var(--gold); white-space:nowrap; width:100%; text-align:center;
-      padding:0.5rem 0 1.5rem; letter-spacing:1px;
+      font-family:var(--font-display);
+      font-size:1.1rem;
+      color:#74C69D;
+      font-weight:900;
+      letter-spacing:0.03em;
+      white-space:nowrap;
+      padding:0.4rem 0 1.2rem;
+      width:100%;
+      text-align:center;
+      overflow:hidden;
     }
-    .sidebar.open .sidebar-logo { padding-left:1.2rem; text-align:left; font-size:1.4rem; }
+    .sidebar.open .sidebar-logo { padding-left:1.2rem; text-align:left; font-size:1.3rem; }
     .sidebar-toggle {
-      width:42px; height:42px; background:rgba(57,255,20,0.12); border:1px solid rgba(57,255,20,0.4);
-      border-radius:12px; color:var(--neon-green); cursor:pointer; margin-bottom:1.2rem;
-      display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+      width:40px; height:40px;
+      background:rgba(116,198,157,0.15);
+      border:1px solid rgba(116,198,157,0.3);
+      border-radius:10px;
+      color:#74C69D;
+      font-size:1rem;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:1rem;
+      flex-shrink:0;
+      transition:background 0.2s;
     }
-    .sidebar-nav { flex:1; width:100%; display:flex; flex-direction:column; gap:0.5rem; padding:0 0.6rem; }
-    .sidebar-item {
-      display:flex; align-items:center; gap:0.9rem; padding:0.7rem 0.8rem;
-      border-radius:14px; cursor:pointer; color:var(--text-muted); font-weight:500;
-      transition:all 0.2s; white-space:nowrap; border:1px solid transparent;
-    }
-    .sidebar-item:hover { background:rgba(57,255,20,0.1); color:var(--neon-green); border-color:rgba(57,255,20,0.3); }
-    .sidebar-item.active { background:rgba(57,255,20,0.2); color:var(--neon-green); border-color:var(--neon-green); box-shadow:0 0 8px rgba(57,255,20,0.3); }
-    .sidebar-icon { font-size:1.2rem; width:28px; text-align:center; }
-    .sidebar-label { opacity:0; transition:opacity 0.2s; font-size:0.85rem; font-weight:500; }
-    .sidebar.open .sidebar-label { opacity:1; }
-    .sidebar-bottom { width:100%; padding:0.8rem; border-top:1px solid rgba(57,255,20,0.15); }
+    .sidebar-toggle:hover { background:rgba(116,198,157,0.3); }
+    .sidebar.open .sidebar-toggle { margin-left:1rem; }
 
-    /* MAIN */
+    .sidebar-nav {
+      flex:1;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:0.3rem;
+      padding:0 0.5rem;
+    }
+    .sidebar-item {
+      display:flex;
+      align-items:center;
+      gap:0.8rem;
+      padding:0.75rem 0.75rem;
+      border-radius:12px;
+      cursor:pointer;
+      color:rgba(255,255,255,0.5);
+      font-size:0.82rem;
+      font-weight:500;
+      transition:all 0.2s;
+      white-space:nowrap;
+      border:1px solid transparent;
+    }
+    .sidebar-item:hover { background:rgba(116,198,157,0.1); color:rgba(255,255,255,0.85); border-color:rgba(116,198,157,0.2); }
+    .sidebar-item.active { background:rgba(116,198,157,0.2); color:#74C69D; border-color:rgba(116,198,157,0.4); }
+    .sidebar-icon { font-size:1.2rem; flex-shrink:0; width:24px; text-align:center; }
+    .sidebar-label { opacity:0; transition:opacity 0.2s; pointer-events:none; }
+    .sidebar.open .sidebar-label { opacity:1; }
+
+    .sidebar-bottom {
+      width:100%;
+      padding:0.5rem;
+      border-top:1px solid rgba(255,255,255,0.06);
+    }
+    .sidebar-user {
+      display:flex; align-items:center; gap:0.6rem;
+      padding:0.6rem 0.5rem;
+      border-radius:10px;
+      font-size:0.72rem;
+      color:rgba(255,255,255,0.4);
+      cursor:pointer;
+    }
+    .sidebar-user:hover { color:rgba(255,255,255,0.7); }
+    .sidebar-user-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:0; transition:opacity 0.2s; }
+    .sidebar.open .sidebar-user-name { opacity:1; }
+
+    /* ===== MAIN LAYOUT ===== */
     .app-main {
-      position:fixed; inset:0; left:var(--sidebar-w); transition:left 0.3s;
-      display:flex; flex-direction:column;
+      position:fixed;
+      inset:0;
+      left:var(--sidebar-w);
+      transition:left 0.3s cubic-bezier(.4,0,.2,1);
+      display:flex;
+      flex-direction:column;
     }
     body.sidebar-open .app-main { left:var(--sidebar-w-open); }
 
-    /* HERO OSCURO */
+    /* ===== HERO ===== */
     .hero-full {
-      position:absolute; inset:0;
+      position:absolute;
+      inset:0;
       background:url('https://lh3.googleusercontent.com/place-photos/AJRVUZONoB-ZKELjLo3bOPKZ7LDXi20-UuLnTtsI5c42Dx9RH_-_9-WEd_zG9nPGhCd0JussJUldkXQjQbLjqTDiN58AjmG_s8ZVX0M_q31v9KP3tWTtG_Q-y_zabLNUzVtFwM2O-u7ob0dK0vSGwQ=s4800-w800-h600') center/cover no-repeat;
-      display:flex; align-items:flex-end;
+      display:flex;
+      align-items:flex-end;
+      color:#fff;
+      overflow:hidden;
     }
     .hero-full::before {
-      content:''; position:absolute; inset:0;
-      background:linear-gradient(0deg, rgba(10,15,13,0.95) 0%, rgba(10,15,13,0.4) 70%, rgba(0,0,0,0.6) 100%);
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(27,67,50,0.1) 40%, rgba(27,67,50,0.75) 100%);
     }
-    .hero-content { position:relative; z-index:2; width:100%; padding:1.5rem 2rem 3rem; text-align:center; }
-    .hero-title {
-      font-family:var(--font-display); font-weight:900; font-size:clamp(2.8rem,8vw,5rem);
-      background:linear-gradient(135deg, #FFD700 0%, #39FF14 100%);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-      text-shadow:0 0 20px rgba(57,255,20,0.3);
+    .clouds-container {
+      position:absolute; top:0; left:0; width:100%; height:100%;
+      pointer-events:none; z-index:1;
     }
-    .hero-sub { font-size:1rem; margin:0.5rem 0 2rem; color:#CCE6D9; letter-spacing:0.03em; }
-    .btn-hero {
-      padding:0.9rem 1.8rem; border-radius:40px; font-weight:700; border:none;
-      cursor:pointer; transition:0.2s; font-family:var(--font);
+    .cloud {
+      position:absolute; background:rgba(255,255,255,0.15); border-radius:50%;
+      box-shadow:0 0 40px rgba(255,255,255,0.1); filter:blur(6px);
+      animation:floatCloud linear infinite;
     }
-    .btn-explore { background:var(--neon-green); color:#0A0F0D; box-shadow:0 0 12px rgba(57,255,20,0.6); }
-    .btn-plan { background:rgba(255,215,0,0.2); backdrop-filter:blur(8px); color:var(--gold); border:1px solid var(--gold); }
-    .btn-hero:hover { transform:translateY(-3px); filter:brightness(1.05); }
+    .cloud::before,.cloud::after { content:''; position:absolute; background:inherit; border-radius:50%; }
+    .cloud::before{width:60%;height:60%;top:-30%;left:20%;}
+    .cloud::after{width:40%;height:40%;top:-20%;left:50%;}
+    @keyframes floatCloud { 0%{transform:translateX(0);}100%{transform:translateX(100vw);} }
+    .hero-content {
+      position:relative; z-index:2; width:100%;
+      padding:1.5rem 2rem 2.5rem; text-align:center;
+    }
+    .hero-title{
+      font-family:var(--font-display);
+      font-weight:900;
+      font-size:clamp(3rem,8vw,5rem);
+      background:linear-gradient(180deg,#FFFFFF 0%,#B7E4C7 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+      letter-spacing:-0.01em;
+    }
+    .hero-sub {
+      font-size:1.1rem; margin:0.5rem 0 2rem; color:#fff;
+      text-shadow:0 4px 10px rgba(0,0,0,0.6); font-weight:400; letter-spacing:0.05em;
+    }
+    .hero-buttons{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+    .btn-hero{
+      flex:1; min-width:160px; padding:1rem 1.8rem; border-radius:30px;
+      font-weight:600; font-size:0.9rem; cursor:pointer; border:none;
+      transition:0.2s; display:flex; align-items:center; justify-content:center;
+      gap:0.5rem; backdrop-filter:blur(8px); font-family:var(--font);
+      letter-spacing:0.02em;
+    }
+    .btn-explore{background:rgba(45,106,79,0.92);color:#fff;box-shadow:0 8px 25px rgba(45,106,79,0.55);}
+    .btn-plan{background:rgba(255,255,255,0.92);color:var(--accent);box-shadow:0 8px 25px rgba(0,0,0,0.2);}
+    .btn-hero:hover{transform:translateY(-2px);}
+    .user-bar{position:absolute;top:1rem;right:1rem;z-index:10;display:flex;gap:0.5rem;align-items:center;}
+    .user-chip{background:rgba(255,255,255,0.92);padding:0.4rem 0.8rem;border-radius:20px;font-size:0.7rem;font-weight:600;color:var(--accent);}
+    .btn-logout{background:none;border:1px solid rgba(255,255,255,0.5);padding:0.2rem 0.5rem;border-radius:12px;font-size:0.6rem;cursor:pointer;color:#fff;}
 
-    /* PANEL CATEGORÍAS con color dinámico */
-    .category-panel {
-      position:absolute; inset:0; display:flex; flex-direction:column;
-      transition:background 0.2s;
+    /* ===== PANEL LATERAL ===== */
+    .explore-panel {
+      position:fixed; top:0; right:0; bottom:0; width:min(460px,45vw);
+      background:#fff; z-index:1500; transform:translateX(100%);
+      transition:transform 0.35s cubic-bezier(.4,0,.2,1); display:flex;
+      flex-direction:column; box-shadow:-10px 0 40px rgba(0,0,0,0.15);
     }
-    .panel-header { padding:1rem 1.5rem; display:flex; align-items:center; gap:1rem; border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0; }
-    .panel-header h2 { font-family:var(--font-display); font-size:1.3rem; flex:1; letter-spacing:-0.2px; }
-    .panel-count { background:rgba(0,0,0,0.5); padding:0.2rem 0.7rem; border-radius:30px; font-size:0.75rem; font-weight:600; }
-    .panel-list {
-      flex:1; overflow-y:auto; padding:1.2rem;
-      display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:2rem;
-      align-content:start;
+    .explore-panel.open { transform:translateX(0); }
+    .panel-header {
+      padding:1.2rem 1rem 0.8rem; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:0.7rem; background:#fff; flex-shrink:0;
     }
-    @media(max-width:640px){ .panel-list { grid-template-columns:1fr; gap:1rem; } }
-
-    /* CARDS NUEVO ESTILO */
-    .item-card {
-      background:var(--card-bg); border-radius:20px; overflow:hidden;
-      border:1px solid rgba(57,255,20,0.3); transition:0.25s ease; cursor:pointer;
-      box-shadow:0 8px 20px rgba(0,0,0,0.5);
-    }
-    .item-card:hover { transform:translateY(-5px); border-color:var(--neon-green); box-shadow:0 12px 28px rgba(57,255,20,0.2); }
-    .item-img {
-      width:100%; aspect-ratio:4/3; object-fit:cover; display:block;
-      transition:transform 0.4s;
-    }
-    .item-card:hover .item-img { transform:scale(1.02); }
-    .item-info { padding:0.9rem 1rem; background:var(--surface); }
-    .item-title { font-weight:800; font-size:1rem; font-family:var(--font-display); color:var(--gold); }
-    .item-meta { font-size:0.7rem; color:var(--text-muted); margin-top:4px; display:flex; flex-wrap:wrap; gap:6px; }
-
-    /* DRAWER / MODAL LATERAL */
-    .detail-drawer {
-      position:fixed; right:0; top:0; bottom:0; width:min(460px,100vw);
-      background:#111A16; z-index:2500; transform:translateX(100%);
-      transition:transform 0.35s; display:flex; flex-direction:column;
-      border-left:2px solid var(--neon-green); box-shadow:-10px 0 40px rgba(0,0,0,0.8);
-    }
-    .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2400; display:none; backdrop-filter:blur(4px); }
-
-    /* RULETA SORPRESA */
-    .roulette-modal {
-      position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:4000;
+    .panel-header h2 { font-family:var(--font-display); font-size:1.1rem; flex:1; }
+    .panel-close {
+      width:32px; height:32px; border-radius:8px; background:#EBF5EE;
+      border:none; cursor:pointer; font-size:0.9rem; color:var(--text-soft);
       display:flex; align-items:center; justify-content:center;
     }
-    .roulette-card {
-      background:var(--surface); border-radius:30px; padding:2rem; width:90%; max-width:500px;
-      text-align:center; border:2px solid var(--gold); box-shadow:0 0 40px rgba(255,215,0,0.4);
+    .panel-close:hover { background:var(--border); }
+
+    .cat-tabs {
+      display:flex; gap:0.4rem; padding:0.8rem 1rem; border-bottom:1px solid var(--border);
+      overflow-x:auto; flex-shrink:0;
     }
-    .roulette-spin {
-      font-size:2rem; font-weight:800; font-family:monospace;
-      background:black; padding:1rem; border-radius:20px; color:var(--neon-green);
-      margin:1rem 0; letter-spacing:2px;
+    .cat-tab {
+      padding:0.4rem 0.9rem; border-radius:20px; font-size:0.75rem;
+      font-weight:600; cursor:pointer; white-space:nowrap; border:none;
+      background:#EBF5EE; color:var(--text-soft); transition:0.2s; font-family:var(--font);
     }
-    .btn-roulette { background:var(--neon-green); border:none; padding:0.8rem 1.5rem; border-radius:40px; font-weight:700; cursor:pointer; }
+    .cat-tab.active { background:var(--accent); color:#fff; }
+    .cat-tab:hover:not(.active) { background:var(--border); }
+    .panel-list { flex:1; overflow-y:auto; padding:0.7rem; display:flex; flex-direction:column; gap:0.5rem; }
 
-    /* transporte mapa */
-    .route-map-container { height:220px; border-radius:16px; margin:0.5rem 0; border:1px solid var(--neon-green); overflow:hidden; }
+    /* ===== ITEM CARD ===== */
+    .item-row {
+      background:#fff;
+      border:1.5px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      transition:border-color 0.2s, box-shadow 0.2s;
+      box-shadow:0 2px 8px rgba(45,106,79,0.05);
+      cursor:pointer;
+    }
+    .item-row:hover { border-color:var(--accent2); box-shadow:0 6px 20px rgba(45,106,79,0.18); transform:translateY(-2px); transition:all 0.2s; }
+    .item-row.selected { border-color:var(--accent); background:#F2FAF5; }
 
-    /* misc */
-    .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--neon-green); color:#0A0F0D; padding:0.5rem 1rem; border-radius:30px; font-weight:700; z-index:9999; display:none; }
-    .whatsapp-float { position:fixed; bottom:20px; right:20px; background:#25D366; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:99; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+    /* IMAGEN: aspect-ratio para que nunca se aplaste */
+    .item-cover {
+      position:relative;
+      width:100%;
+      aspect-ratio: 4 / 3;
+      overflow:hidden;
+    }
+    .item-cover img {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      display:block;
+      transition: transform 0.3s ease;
+    }
+    .item-row:hover .item-cover img { transform: scale(1.04); }
+    .item-cover-overlay {
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to top, rgba(10,30,20,0.85) 0%, transparent 60%);
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      padding:0.6rem 0.7rem 0.5rem;
+    }
+    .item-cover-name {
+      color:#fff;
+      font-weight:800;
+      font-size:0.88rem;
+      line-height:1.25;
+      text-shadow:0 2px 10px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.9);
+      font-family:var(--font-display);
+      letter-spacing:0.01em;
+      word-break:break-word;
+      display:block !important;
+      visibility:visible !important;
+      opacity:1 !important;
+    }
+    .item-cover-badge {
+      display:inline-block;
+      margin-top:0.22rem;
+      font-size:0.6rem; font-weight:700; padding:0.13rem 0.42rem;
+      border-radius:20px;
+      backdrop-filter:blur(4px);
+    }
+    .price-low-b{background:rgba(46,213,115,0.35);color:#d4ffeb;border:1px solid rgba(46,213,115,0.6);}
+    .price-mid-b{background:rgba(255,185,0,0.35);color:#fff3cc;border:1px solid rgba(255,185,0,0.6);}
+    .price-high-b{background:rgba(255,71,87,0.35);color:#ffd6da;border:1px solid rgba(255,71,87,0.6);}
 
-    input, select, textarea { background:#1E2A24; border:1px solid #2C3E36; color:white; border-radius:12px; padding:0.6rem; font-family:var(--font); }
-    button { font-family:var(--font); }
-    .hidden { display: none; }
+    /* Barra de acción inferior de la card */
+    .item-action-bar {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0.7rem 0.9rem 0.75rem;
+      border-top:1px solid var(--border);
+      gap:0.4rem;
+      background:#fff;
+    }
+    .item-loc { font-size:0.78rem; color:var(--text-soft); font-weight:500; }
+
+    /* Botón "Ver detalles" toggle */
+    .btn-details-toggle {
+      background:#EBF5EE; color:var(--accent);
+      border:1px solid var(--border);
+      border-radius:8px; padding:0.3rem 0.7rem;
+      font-size:0.68rem; font-weight:700; cursor:pointer;
+      font-family:var(--font); transition:0.15s; white-space:nowrap;
+    }
+    .btn-details-toggle:hover { background:#D8F3DC; }
+    .item-row.open .btn-details-toggle { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+    /* Panel de detalles expandible */
+    .item-details {
+      max-height:0; overflow:hidden;
+      transition:max-height 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .item-row.open .item-details { max-height:360px; }
+    .item-details-inner {
+      padding:0.75rem 0.8rem 0.8rem;
+      border-top:1px solid var(--border);
+      display:flex; flex-direction:column; gap:0.45rem;
+    }
+    .item-details-inner .meta { font-size:0.68rem; color:var(--text-soft); line-height:1.5; }
+    .item-details-inner .desc { font-size:0.78rem; color:var(--text); line-height:1.4; }
+    .item-actions { display:flex; gap:0.4rem; margin-top:0.3rem; flex-wrap:wrap; }
+    .btn-sm{padding:0.35rem 0.75rem;border-radius:8px;font-size:0.66rem;font-weight:700;cursor:pointer;border:none;transition:0.15s;font-family:var(--font);}
+    .btn-select{background:#EBF5EE;color:var(--accent);border:1px solid var(--border);}
+    .btn-select:hover{background:#D8F3DC;}
+    .btn-reserve{background:#25D366;color:#fff;}
+    .btn-reserve:hover{filter:brightness(0.9);}
+
+    /* ===== MAPA PANEL ===== */
+    .map-panel {
+      position:fixed; top:0; right:0; bottom:0; width:min(460px,45vw);
+      background:#fff; z-index:1500; transform:translateX(100%);
+      transition:transform 0.35s cubic-bezier(.4,0,.2,1); display:flex;
+      flex-direction:column; box-shadow:-10px 0 40px rgba(0,0,0,0.15);
+    }
+    .map-panel.open { transform:translateX(0); }
+    #mainMap { flex:1; }
+
+    /* ===== MODALES ===== */
+    .modal-overlay{position:fixed;inset:0;background:rgba(27,50,45,0.88);z-index:3000;display:flex;align-items:flex-end;justify-content:center;}
+    .modal-overlay.hidden{display:none;}
+    .modal-sheet{background:#fff;border-radius:20px 20px 0 0;padding:1.2rem 1rem;width:100%;max-width:600px;max-height:85vh;overflow-y:auto;animation:slideUp 0.35s ease;}
+    @keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @media(min-width:600px){.modal-sheet{border-radius:20px;margin-bottom:2rem;max-height:80vh;}}
+    .modal-close{float:right;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-soft);}
+
+    .tab-book{display:flex;gap:0;background:#D8EAE0;border-radius:14px 14px 0 0;overflow:hidden;margin-bottom:0.5rem;}
+    .tab-btn{flex:1;padding:0.8rem 0.4rem;border:none;background:transparent;font-weight:600;font-size:0.7rem;color:var(--text-soft);cursor:pointer;border-radius:14px 14px 0 0;display:flex;flex-direction:column;align-items:center;gap:0.2rem;font-family:var(--font);}
+    .tab-btn.active{background:#fff;color:var(--accent);box-shadow:0 -3px 12px rgba(0,0,0,0.05);}
+
+    /* Cards en modales (se mantienen para compatibilidad) */
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:0.6rem;}
+    @media(min-width:600px){.cards-grid{grid-template-columns:repeat(3,1fr);}}
+    .card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:2px solid transparent;cursor:pointer;transition:0.2s;display:flex;flex-direction:column;}
+    .card.selected{border-color:var(--accent);}
+    .card-img{width:100%;height:90px;background-size:cover;background-position:center;flex-shrink:0;}
+    .card-body{padding:0.5rem;flex:1;display:flex;flex-direction:column;gap:0.15rem;}
+    .card-body h4{font-size:0.7rem;font-weight:700;line-height:1.2;}
+    .card-body .meta{font-size:0.6rem;color:var(--text-soft);}
+    .price{font-weight:700;font-size:0.7rem;margin-top:auto;}
+    .price-low{color:#1a8c4e;}.price-mid{color:#8a6200;}.price-high{color:#9a1c2e;}
+    .card-actions{display:flex;gap:0.3rem;margin-top:0.3rem;flex-wrap:wrap;}
+
+    .route-bar{display:flex;gap:0.3rem;padding:0.5rem;flex-wrap:wrap;align-items:center;background:#F2FAF5;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .route-bar select,.route-bar button{padding:0.4rem 0.5rem;font-size:0.7rem;border-radius:8px;border:1px solid var(--border);font-family:var(--font);background:#fff;cursor:pointer;}
+    .route-bar button{background:var(--accent2);color:#fff;font-weight:700;border:none;}
+    .tarifa-info{padding:0.3rem;font-size:0.7rem;text-align:center;background:#EBF5EE;border-radius:8px;color:var(--text-soft);font-weight:500;}
+
+    .result-box{background:#EBF5EE;border-radius:10px;padding:0.6rem;margin-top:0.5rem;font-size:0.7rem;line-height:1.6;}
+    .result-total{background:var(--green-dark);color:#fff;padding:0.7rem;border-radius:10px;text-align:center;margin-top:0.5rem;}
+    .result-total .big{font-size:1.4rem;font-weight:900;}
+    .btn-send{display:flex;align-items:center;gap:0.3rem;width:100%;justify-content:center;padding:0.6rem;border-radius:20px;font-weight:700;font-size:0.75rem;cursor:pointer;border:none;margin-top:0.4rem;transition:0.15s;font-family:var(--font);}
+    .btn-send.email{background:var(--green-dark);color:#fff;}
+    .btn-send.whatsapp{background:#25D366;color:#fff;}
+    .btn-send:hover{filter:brightness(0.92);transform:translateY(-1px);}
+
+    .choice-modal{position:fixed;inset:0;background:rgba(27,50,45,0.85);z-index:3500;display:flex;align-items:center;justify-content:center;}
+    .choice-modal.hidden{display:none;}
+    .choice-card{background:#fff;border-radius:20px;padding:2rem 1.5rem;width:90%;max-width:380px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.3);}
+    .choice-btn{display:block;width:100%;padding:0.9rem;border-radius:16px;font-weight:700;font-size:0.85rem;cursor:pointer;border:2px solid var(--border);background:#fff;margin-bottom:0.6rem;transition:0.2s;font-family:var(--font);}
+    .choice-btn.auto{border-color:var(--green-light);color:var(--green-mid);}
+    .choice-btn.manual{border-color:var(--accent);color:var(--accent);}
+    .choice-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.08);}
+    .choice-cancel{background:none;border:none;font-size:0.7rem;cursor:pointer;color:var(--text-soft);margin-top:0.5rem;font-family:var(--font);}
+
+    .toast{position:fixed;top:15px;left:50%;transform:translateX(-50%);background:var(--green-dark);color:#fff;padding:0.5rem 1rem;border-radius:20px;font-weight:600;font-size:0.7rem;z-index:9999;display:none;box-shadow:0 6px 20px rgba(0,0,0,0.3);}
+    .whatsapp-float{position:fixed;bottom:20px;right:20px;background:#25D366;width:44px;height:44px;border-radius:50%;color:#fff;font-size:1.2rem;box-shadow:0 6px 20px rgba(37,211,102,0.4);cursor:pointer;z-index:99;border:none;display:flex;align-items:center;justify-content:center;}
+    .map-container{height:200px;border-radius:8px;margin:0.5rem 0;border:1px solid var(--border);}
+    .actividades-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.4rem;max-height:180px;overflow-y:auto;margin:0.4rem 0;}
+    .actividad-chip{display:flex;align-items:center;gap:0.3rem;font-size:0.65rem;padding:0.3rem 0.5rem;border-radius:8px;background:#fff;border:1px solid var(--border);cursor:pointer;font-family:var(--font);}
+    .review-box{margin-top:0.8rem;background:#fff;padding:0.6rem;border-radius:8px;border:1px solid var(--border);}
+    .stars span{font-size:1.2rem;cursor:pointer;color:#ccc;transition:0.2s;}
+    .stars span.active{color:var(--green-light);}
+
+    /* ===== REGISTRO ===== */
+    .reg-overlay {
+      position:fixed; inset:0;
+      background:rgba(27,67,50,0.92);
+      backdrop-filter:blur(12px);
+      z-index:4000; display:flex; align-items:center; justify-content:center;
+    }
+    .reg-overlay.hidden{display:none;}
+    .reg-card {
+      background:#FFFFFF; border-radius:20px; padding:2.5rem 2rem;
+      width:92%; max-width:420px;
+      box-shadow:0 30px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1);
+      animation:fadeInUp 0.5s ease;
+    }
+    @keyframes fadeInUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .reg-header { text-align:center; margin-bottom:2rem; }
+    .reg-header .reg-icon {
+      width:56px; height:56px;
+      background:linear-gradient(135deg, #2D6A4F 0%, #52B788 100%);
+      border-radius:16px; display:flex; align-items:center; justify-content:center;
+      margin:0 auto 1rem; color:white; font-size:1.5rem;
+      box-shadow:0 8px 20px rgba(45,106,79,0.35);
+    }
+    .reg-header h2 { font-family:var(--font-display); font-weight:700; font-size:1.3rem; color:#1A1A1A; margin-bottom:0.3rem; }
+    .reg-header p { font-size:0.85rem; color:#6B7280; line-height:1.4; }
+    .reg-form { display:flex; flex-direction:column; gap:1rem; }
+    .input-group { position:relative; }
+    .input-group .input-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#9CA3AF; font-size:0.9rem; pointer-events:none; }
+    .input-group input {
+      width:100%; padding:0.9rem 1rem 0.9rem 2.8rem; border-radius:12px; border:1.5px solid #E5E7EB;
+      font-family:var(--font); font-size:0.9rem; background:#F9FAFB; transition:all 0.2s ease; color:#1F2937;
+    }
+    .input-group input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 4px rgba(45,106,79,0.1); background:#FFFFFF; }
+    .input-group input::placeholder { color:#9CA3AF; }
+    .btn-register {
+      width:100%; background:linear-gradient(135deg, #2D6A4F 0%, #1B4332 100%);
+      color:#FFFFFF; border:none; padding:1rem; border-radius:12px; font-weight:600;
+      font-size:0.95rem; cursor:pointer; letter-spacing:0.02em; transition:all 0.3s ease;
+      box-shadow:0 6px 20px rgba(45,106,79,0.3); margin-top:0.5rem; font-family:var(--font);
+    }
+    .btn-register:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(45,106,79,0.4); }
+    .reg-footer { text-align:center; margin-top:1.2rem; font-size:0.75rem; color:#9CA3AF; }
+    .reg-footer span { color:var(--accent); font-weight:500; }
+
+    input[type=number], select {
+      width:100%; padding:0.5rem 0.6rem; border-radius:8px; border:1px solid var(--border);
+      font-family:var(--font); font-size:0.8rem; background:#fff; margin:0.3rem 0; display:block;
+    }
+
+    /* PANEL HEADER */
+    #panelHeaderBar {
+      background:linear-gradient(135deg, #1B4332 0%, #2D6A4F 100%);
+    }
+    
+    @media(max-width:768px){
+      :root{ --sidebar-w:60px; --sidebar-w-open:200px; }
+      .explore-panel, .map-panel { width:100%; }
+      #panelMapWrap { width:100% !important; height:200px !important; border-right:none !important; border-bottom:1px solid var(--border); }
+      #panelBody { flex-direction:column !important; }
+    }
+
+    /* Grid de cards */
+    #panelList {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: auto;
+      gap: 2.5rem;
+      align-items: start;
+      align-content: start;
+      padding: 1.2rem 1.2rem 3rem;
+    }
+    @media(max-width:500px){
+      #panelList { grid-template-columns: 1fr; }
+    }
+    .item-row {
+      display: flex !important;
+      flex-direction: column !important;
+      height: auto !important;
+      min-height: 0 !important;
+      align-self: start !important;
+    }
+
+    /* Distancia badge en el mapa */
+    .dist-badge {
+      background: rgba(27,67,50,0.92);
+      color: #B7E4C7;
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      pointer-events: none;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    /* Popup distancia en mapa */
+    .leaflet-popup-content { font-family: var(--font); font-size: 12px; }
   </style>
 </head>
 <body>
+
 <div id="toast" class="toast"></div>
 
-<!-- REGISTRO CON FOTO Y LOGIN EXISTENTE -->
-<div id="regOverlay" class="reg-overlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:5000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
-  <div class="reg-card" style="background:#141E1A; border-radius:28px; max-width:480px; width:90%; padding:1.5rem; border:1px solid var(--neon-green);">
-    <div style="text-align:center;">
-      <img src="https://lh3.googleusercontent.com/place-photos/AJRVUZONoB-ZKELjLo3bOPKZ7LDXi20-UuLnTtsI5c42Dx9RH_-_9-WEd_zG9nPGhCd0JussJUldkXQjQbLjqTDiN58AjmG_s8ZVX0M_q31v9KP3tWTtG_Q-y_zabLNUzVtFwM2O-u7ob0dK0vSGwQ=s4800-w800-h600" style="width:100%; height:140px; object-fit:cover; border-radius:20px; margin-bottom:1rem; border:2px solid var(--gold);">
-      <h2 style="color:var(--gold); font-family:var(--font-display);">Rojobore</h2>
-      <p style="color:#B8E0D0;">Crea tu cuenta o ingresa</p>
+<!-- ===== REGISTRO ===== -->
+<div class="reg-overlay" id="regOverlay">
+  <div class="reg-card">
+    <div class="reg-header">
+      <div class="reg-icon">🌿</div>
+      <h2>Crear cuenta</h2>
+      <p>Accede a planes personalizados y recibe tu itinerario completo.</p>
     </div>
-    <div class="reg-form" style="margin-top:1rem;">
-      <input type="text" id="regName" placeholder="Nombre completo" style="width:100%; margin-bottom:0.8rem;">
-      <input type="email" id="regEmail" placeholder="Correo electrónico" style="width:100%; margin-bottom:0.8rem;">
-      <input type="tel" id="regPhone" placeholder="WhatsApp (ej: +59171607412)" style="width:100%; margin-bottom:1rem;">
-      <button class="btn-register" onclick="registerOrLogin()" style="background:var(--neon-green); color:#000; width:100%; padding:0.9rem; border-radius:40px; font-weight:800;">Registrarse / Ingresar</button>
-      <div style="text-align:center; margin-top:0.8rem; font-size:0.7rem; color:var(--text-muted);">Si ya tienes cuenta, usa el mismo correo</div>
+    <div class="reg-form">
+      <div class="input-group">
+        <span class="input-icon">👤</span>
+        <input type="text" id="regName" placeholder="Nombre completo">
+      </div>
+      <div class="input-group">
+        <span class="input-icon">📧</span>
+        <input type="email" id="regEmail" placeholder="Correo electrónico">
+      </div>
+      <div class="input-group">
+        <span class="input-icon">📱</span>
+        <input type="tel" id="regPhone" placeholder="WhatsApp (ej: +591 71607412)">
+      </div>
+      <button class="btn-register" onclick="registerUser()">Registrarme gratis</button>
     </div>
+    <div class="reg-footer">Al registrarte aceptas nuestros <span>términos</span> y <span>política de privacidad</span>.</div>
   </div>
 </div>
 
-<!-- SIDEBAR SIN EMOJIS -->
+<!-- ===== CHOICE MODAL ===== -->
+<div class="choice-modal hidden" id="choiceModal">
+  <div class="choice-card">
+    <h3 style="font-family:var(--font-display);">¿Cómo quieres planificar?</h3>
+    <p style="font-size:0.7rem;color:var(--text-soft);margin-bottom:1rem;">Elige el tipo de presupuesto</p>
+    <button class="choice-btn auto" onclick="openPlanModal()">🤖 Plan automático<br><small style="font-weight:400;">Optimiza tu presupuesto al máximo</small></button>
+    <button class="choice-btn manual" onclick="openCalcModal()">🧮 Plan manual<br><small style="font-weight:400;">Basado en tus selecciones actuales</small></button>
+    <button class="choice-cancel" onclick="closeChoiceModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- ===== EXPLORAR MODAL (original, intacto) ===== -->
+<div class="modal-overlay hidden" id="exploreModal">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="document.getElementById('exploreModal').classList.add('hidden')">✕</button>
+    <div class="tab-book" id="tabNav">
+      <button class="tab-btn active" data-tab="turismo">🏖️ Lugares</button>
+      <button class="tab-btn" data-tab="hoteles">🏨 Hoteles</button>
+      <button class="tab-btn" data-tab="restaurantes">🍽️ Restaurantes</button>
+      <button class="tab-btn" data-tab="transporte">🚌 Transporte</button>
+    </div>
+    <div id="sec-turismo" class="category-section" style="display:block;"><div class="cards-grid" id="turismoGrid"></div></div>
+    <div id="sec-hoteles" class="category-section" style="display:none;"><div class="cards-grid" id="hotelesGrid"></div></div>
+    <div id="sec-restaurantes" class="category-section" style="display:none;"><div class="cards-grid" id="restaurantesGrid"></div></div>
+    <div id="sec-transporte" class="category-section" style="display:none;"><div class="cards-grid" id="transporteGrid"></div></div>
+  </div>
+</div>
+
+<!-- ===== PLAN MODAL ===== -->
+<div class="modal-overlay hidden" id="planModal">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeModals()">✕</button>
+    <h3 style="color:var(--text);font-family:var(--font-display);">🤖 Plan automático inteligente</h3>
+    <input type="number" id="planBudget" value="2500" min="1000" placeholder="Presupuesto (Bs)">
+    <div style="display:flex;gap:0.5rem;margin:0.4rem 0;">
+      <select id="planPeople"><option value="1">1 persona</option><option value="2" selected>2 personas</option><option value="3">3 personas</option><option value="4">4 personas</option></select>
+      <select id="planDays"><option value="1">1 día</option><option value="2" selected>2 días</option><option value="3">3 días</option><option value="4">4 días</option></select>
+    </div>
+    <div style="font-weight:600;font-size:0.7rem;margin-top:0.5rem;">🗺️ Ruta (para transporte propio)</div>
+    <div class="route-bar">
+      <select id="planOrigin"><option value="">Origen</option><option value="santa-cruz">Santa Cruz</option><option value="cochabamba">Cochabamba</option><option value="la-paz">La Paz</option><option value="sucre">Sucre</option><option value="tarija">Tarija</option><option value="potosi">Potosí</option><option value="oruro">Oruro</option><option value="trinidad">Trinidad</option></select>
+      <select id="planDest"><option value="">Destino</option><option value="roboré">Roboré</option><option value="chochis">Chochís</option><option value="aguascalientes">Aguas Calientes</option></select>
+      <button onclick="calcularPlanRoute()">Calcular</button>
+    </div>
+    <div id="planRouteInfo" class="tarifa-info" style="margin:0.3rem 0;">Selecciona origen y destino</div>
+    <button class="btn-hero btn-explore" onclick="generateQuickPlan()" style="width:100%;margin-top:0.3rem;">✨ Generar plan</button>
+    <div id="planResult"></div>
+  </div>
+</div>
+
+<!-- ===== CALCULADORA MANUAL MODAL ===== -->
+<div class="modal-overlay hidden" id="calcModal">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeModals()">✕</button>
+    <h3 style="color:var(--text);font-family:var(--font-display);">🧮 Calculadora manual</h3>
+    <div style="display:flex;gap:0.5rem;margin:0.4rem 0;"><input type="number" id="calcPeople" value="2" min="1" placeholder="Personas"> <input type="number" id="calcDays" value="2" min="1" placeholder="Días"></div>
+    <select id="calcTransport" onchange="onTransportChange()"><option value="0">-- Transporte --</option></select>
+    <select id="calcHotel"><option value="0">-- Hotel --</option></select>
+    <select id="calcRestaurante"><option value="0">-- Restaurante --</option></select>
+    <div style="font-weight:600;font-size:0.7rem;margin-top:0.5rem;">🎟️ Actividades (máx. 5)</div>
+    <div class="actividades-grid" id="actividadesCheckboxes"></div>
+    <div id="calcMapWrapper" style="display:none;">
+      <div class="route-bar">
+        <button onclick="getUserLocation()" style="flex:0 0 auto;">📍 Mi ubicación</button>
+        <select id="calcOriginSelect"><option value="">Origen manual</option><option value="santa-cruz">Santa Cruz</option><option value="cochabamba">Cochabamba</option><option value="la-paz">La Paz</option><option value="sucre">Sucre</option><option value="tarija">Tarija</option><option value="potosi">Potosí</option><option value="oruro">Oruro</option><option value="trinidad">Trinidad</option></select>
+        <select id="calcDestSelect"><option value="">Destino</option><option value="roboré">Roboré</option><option value="chochis">Chochís</option><option value="aguascalientes">Aguas Calientes</option></select>
+        <button onclick="calcularCalcRoute()">Calcular</button>
+      </div>
+      <div class="map-container" id="calcMapContainer"></div>
+      <div id="calcRouteInfo" class="tarifa-info">Selecciona origen y destino</div>
+    </div>
+    <button class="btn-hero btn-explore" onclick="calculateWithSelections()" style="width:100%;margin-top:0.5rem;">📊 Calcular desglose</button>
+    <div id="calcResult"></div>
+  </div>
+</div>
+
+<!-- ===== SIDEBAR ===== -->
 <div class="sidebar" id="sidebar">
-  <div class="sidebar-logo">ROJOBORE</div>
-  <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="sidebar-logo">🌿 <span class="sidebar-label" style="font-family:var(--font-display);color:#74C69D;">Rojobore</span></div>
+  <button class="sidebar-toggle" onclick="toggleSidebar()" title="Menú">☰</button>
+
   <nav class="sidebar-nav">
-    <div class="sidebar-item active" onclick="showSection('hero')"><span class="sidebar-icon">🏠</span><span class="sidebar-label">Inicio</span></div>
-    <div class="sidebar-item" onclick="showSection('turismo')"><span class="sidebar-icon">🌿</span><span class="sidebar-label">Lugares</span></div>
-    <div class="sidebar-item" onclick="showSection('hoteles')"><span class="sidebar-icon">🏨</span><span class="sidebar-label">Hoteles</span></div>
-    <div class="sidebar-item" onclick="showSection('restaurantes')"><span class="sidebar-icon">🍽️</span><span class="sidebar-label">Restaurantes</span></div>
-    <div class="sidebar-item" onclick="showSection('transporte')"><span class="sidebar-icon">🚌</span><span class="sidebar-label">Transporte</span></div>
-    <div class="sidebar-item" onclick="showSection('mapa')"><span class="sidebar-icon">🗺️</span><span class="sidebar-label">Mapa</span></div>
+    <div class="sidebar-item active" onclick="showSection('hero')" id="nav-hero">
+      <span class="sidebar-icon">🏠</span>
+      <span class="sidebar-label">Inicio</span>
+    </div>
+    <div class="sidebar-item" onclick="showSection('turismo')" id="nav-turismo">
+      <span class="sidebar-icon">🏖️</span>
+      <span class="sidebar-label">Lugares turísticos</span>
+    </div>
+    <div class="sidebar-item" onclick="showSection('hoteles')" id="nav-hoteles">
+      <span class="sidebar-icon">🏨</span>
+      <span class="sidebar-label">Hoteles</span>
+    </div>
+    <div class="sidebar-item" onclick="showSection('restaurantes')" id="nav-restaurantes">
+      <span class="sidebar-icon">🍽️</span>
+      <span class="sidebar-label">Restaurantes</span>
+    </div>
+    <div class="sidebar-item" onclick="showSection('transporte')" id="nav-transporte">
+      <span class="sidebar-icon">🚌</span>
+      <span class="sidebar-label">Transporte</span>
+    </div>
+    <div class="sidebar-item" onclick="showSection('mapa')" id="nav-mapa">
+      <span class="sidebar-icon">🗺️</span>
+      <span class="sidebar-label">Mapa</span>
+    </div>
   </nav>
+
   <div class="sidebar-bottom">
-    <div class="sidebar-item" onclick="openChoiceModalSafe()"><span class="sidebar-icon">✨</span><span class="sidebar-label">Planificar viaje</span></div>
-    <div class="sidebar-item" id="sidebarUser" style="display:none;" onclick="logout()"><span class="sidebar-icon">👤</span><span class="sidebar-label" id="sidebarUserName"></span><span class="sidebar-label" style="margin-left:6px;">(Salir)</span></div>
+    <div class="sidebar-item" onclick="openChoiceModalSafe()" style="background:rgba(116,198,157,0.15);border-color:rgba(116,198,157,0.3);color:#74C69D;">
+      <span class="sidebar-icon">🗓️</span>
+      <span class="sidebar-label" style="color:#74C69D;font-weight:600;">Planificar viaje</span>
+    </div>
+    <div class="sidebar-user" id="sidebarUser" style="display:none;">
+      <span>👤</span>
+      <span class="sidebar-user-name" id="sidebarUserName">Usuario</span>
+      <span class="sidebar-label" style="font-size:0.6rem;cursor:pointer;color:#f87;" onclick="logout()">Salir</span>
+    </div>
   </div>
 </div>
 
+<!-- ===== MAIN ===== -->
 <div class="app-main" id="appMain">
-  <!-- HERO -->
-  <div id="section-hero" style="position:absolute; inset:0;">
+
+  <!-- HERO SECTION -->
+  <div id="section-hero" style="position:absolute;inset:0;transition:opacity 0.3s;">
     <div class="hero-full">
+      <div class="clouds-container" id="cloudsContainer"></div>
+      <div class="user-bar" id="userBar" style="display:none;">
+        <span class="user-chip" id="userName">Usuario</span>
+        <button class="btn-logout" onclick="logout()">Salir</button>
+      </div>
       <div class="hero-content">
-        <div class="hero-title">ROJOBORE</div>
-        <p class="hero-sub">Aventura, selva y tecnología chiquitana</p>
-        <div class="hero-buttons" style="display:flex; gap:1rem; justify-content:center;">
+        <div class="hero-title">Rojobore</div>
+        <p class="hero-sub">Descubre paisajes únicos, aventura y cultura</p>
+        <div class="hero-buttons">
           <button class="btn-hero btn-explore" onclick="showSection('turismo')">Explorar lugares</button>
           <button class="btn-hero btn-plan" onclick="openChoiceModalSafe()">Planificar viaje</button>
         </div>
@@ -230,219 +674,986 @@
     </div>
   </div>
 
-  <!-- PANEL DINÁMICO CATEGORÍA -->
-  <div id="section-panel" class="category-panel" style="display:none; background:#0A0F0D;">
-    <div class="panel-header" id="panelHeader">
-      <span id="panelIcon">🌿</span><h2 id="panelTitle">Lugares turísticos</h2><span id="panelCount" class="panel-count"></span>
+  <!-- PANEL LATERAL PARA CATEGORÍAS -->
+  <div id="section-panel" style="position:absolute;inset:0;display:none;background:var(--bg);flex-direction:column;">
+    <!-- Header -->
+    <div id="panelHeaderBar" style="background:linear-gradient(135deg,#1B4332 0%,#2D6A4F 100%);padding:1rem 1.2rem;display:flex;align-items:center;gap:0.8rem;flex-shrink:0;">
+      <span id="panelIcon" style="font-size:1.3rem;">🏖️</span>
+      <h2 id="panelTitle" style="font-family:var(--font-display);color:#fff;font-size:1.2rem;flex:1;">Lugares turísticos</h2>
+      <span id="panelCount" style="font-size:0.72rem;color:#B7E4C7;background:rgba(183,228,199,0.15);padding:0.25rem 0.6rem;border-radius:20px;"></span>
     </div>
-    <div class="panel-list" id="panelList"></div>
+
+    <!-- Cuerpo: mapa (solo transporte) + grid -->
+    <div id="panelBody" style="display:flex;flex:1;overflow:hidden;min-height:0;position:relative;">
+
+      <!-- MAPA — solo transporte -->
+      <div id="panelMapWrap" style="display:none;width:340px;flex-shrink:0;position:relative;border-right:1px solid var(--border);">
+        <div id="panelMap" style="height:100%;width:100%;"></div>
+      </div>
+
+      <!-- Grid scrollable -->
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:1rem;-webkit-overflow-scrolling:touch;" id="panelList"></div>
+
+      <!-- Flecha bajar (solo restaurantes) -->
+      <button id="scrollDownBtn" onclick="scrollPanelDown()" style="
+        display:none;
+        position:absolute;
+        bottom:20px; right:20px;
+        width:48px; height:48px;
+        background:var(--accent);
+        color:#fff;
+        border:none;
+        border-radius:50%;
+        font-size:1.3rem;
+        cursor:pointer;
+        box-shadow:0 4px 16px rgba(45,106,79,0.5);
+        z-index:100;
+        align-items:center;
+        justify-content:center;
+        transition:background 0.2s;
+      ">↓</button>
+
+    </div>
   </div>
 
-  <!-- MAPA COMPLETO -->
-  <div id="section-mapa" style="position:absolute; inset:0; display:none; flex-direction:column;">
-    <div style="padding:1rem 1.2rem; background:#0A0F0D; border-bottom:1px solid var(--neon-green);"><h2 style="color:var(--gold);">Mapa interactivo</h2></div>
-    <div id="fullMapContainer" style="flex:1;"></div>
+  <!-- ===== DRAWER DETALLE ===== -->
+  <div id="detailDrawer" style="
+    position:fixed;right:0;top:0;bottom:0;width:min(420px,100vw);
+    background:#fff;z-index:2500;
+    transform:translateX(100%);
+    transition:transform 0.35s cubic-bezier(.4,0,.2,1);
+    display:flex;flex-direction:column;
+    box-shadow:-8px 0 40px rgba(0,0,0,0.18);
+  ">
+    <!-- Header drawer -->
+    <div id="drawerHeader" style="background:linear-gradient(135deg,#1B4332,#2D6A4F);padding:1rem 1.2rem;display:flex;align-items:center;gap:0.8rem;flex-shrink:0;">
+      <div id="drawerImgThumb" style="width:48px;height:48px;border-radius:10px;background-size:cover;background-position:center;flex-shrink:0;border:2px solid rgba(255,255,255,0.25);"></div>
+      <div style="flex:1;min-width:0;">
+        <div id="drawerTitle" style="color:#fff;font-family:var(--font-display);font-size:1rem;font-weight:700;line-height:1.2;"></div>
+        <div id="drawerSub" style="color:#B7E4C7;font-size:0.72rem;margin-top:2px;"></div>
+      </div>
+      <button onclick="closeDrawer()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+    </div>
+    <!-- Imagen grande -->
+    <div id="drawerImg" style="height:200px;background-size:cover;background-position:center;flex-shrink:0;"></div>
+    <!-- Contenido scroll -->
+    <div id="drawerBody" style="flex:1;overflow-y:auto;padding:1.2rem;display:flex;flex-direction:column;gap:0.9rem;"></div>
   </div>
+  <!-- Overlay oscuro detrás del drawer -->
+  <div id="drawerOverlay" onclick="closeDrawer()" style="display:none;position:fixed;inset:0;background:rgba(27,50,45,0.45);z-index:2400;"></div>
+
+  <!-- PANEL MAPA FULL -->
+  <div id="section-mapa" style="position:absolute;inset:0;display:none;">
+    <div style="background:linear-gradient(135deg,#1B4332 0%,#2D6A4F 100%);padding:1rem 1.2rem;display:flex;align-items:center;gap:0.8rem;">
+      <span style="font-size:1.3rem;">🗺️</span>
+      <h2 style="font-family:var(--font-display);color:#fff;font-size:1.2rem;">Mapa de Roboré</h2>
+    </div>
+    <div id="fullMapContainer" style="height:calc(100% - 60px);width:100%;"></div>
+  </div>
+
 </div>
 
 <button class="whatsapp-float" onclick="contactSupport()">💬</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // ------------------ DATOS COMPLETOS (igual que antes pero añadimos dirección literal para detalles) ------------------
+  // ==================== DATOS COMPLETOS (sin cambios) ====================
   const lugaresTuristicos = [
-    { id:1, item:"Balneario Municipal El Chorro", municipio:"Roboré", precioLocal:10, precioExtranjero:20, rating:4.5, horario:"08:00-18:00", descripcion:"Balneario municipal con piscinas naturales.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZP8CNlPoHXeqQ1vVU6nxSL3dEXmdd6KL7lTzjQdf7twyU09o66isKivscEbAM4DQr518Uf6sxI1Z_5GyMccnj6C-KcINVkIIx9OzRAtCUyh82tMP-rYGW3y1B0usWk5BCmJpSimdbHRZOTYPAI=s4800-w800-h600", lat:-18.3328, lng:-59.7583, direccion:"Av. Circunvalación, Roboré" },
-    { id:2, item:"Las Pampas", municipio:"Roboré", precioLocal:15, precioExtranjero:30, rating:4.3, horario:"06:00-17:00", descripcion:"Sabana chiquitana con aves.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZO91wW37n7jLaSxxEmZbeRb9IKfQQbn9v68uteqlNXIec6cqe1S03zcBlZp6ITpB_x2ra7nDQejhus0IiZViCuztGsqiHjL7oaVCjDUNbBGNIiUaKoDv4f0tJCyYKTxsff5zJsqQUEW1ejtdQ=s4800-w800-h600", lat:-18.345, lng:-59.77, direccion:"Ruta 10, km 12" },
-    { id:7, item:"Santuario Mariano de la Torre", municipio:"Chochís", precioLocal:20, precioExtranjero:50, rating:4.4, horario:"09:00-17:00", descripcion:"Complejo histórico en rocas.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZONoB-ZKELjLo3bOPKZ7LDXi20-UuLnTtsI5c42Dx9RH_-_9-WEd_zG9nPGhCd0JussJUldkXQjQbLjqTDiN58AjmG_s8ZVX0M_q31v9KP3tWTtG_Q-y_zabLNUzVtFwM2O-u7ob0dK0vSGwQ=s4800-w800-h600", lat:-18.15, lng:-60.03, direccion:"Chochís centro" }
+    { id:1, item:"Balneario Municipal El Chorro", municipio:"Roboré", precioLocal:10, precioExtranjero:20, rating:4.5, horario:"08:00-18:00", descripcion:"Balneario municipal con piscinas naturales de agua cristalina.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZP8CNlPoHXeqQ1vVU6nxSL3dEXmdd6KL7lTzjQdf7twyU09o66isKivscEbAM4DQr518Uf6sxI1Z_5GyMccnj6C-KcINVkIIx9OzRAtCUyh82tMP-rYGW3y1B0usWk5BCmJpSimdbHRZOTYPAI=s4800-w800-h600", lat:-18.3328, lng:-59.7583, googleMaps:"https://maps.app.goo.gl/eeZzYqQRrB1Qtw4n8", distancia:"Centro de Roboré", transporte:"Caminando 5 min", dificultad:"Fácil", experiencia:"Relax, familiar", servicios:"Vestidores, baños, quioscos", recomendacion:"Llevar traje de baño y protector solar" },
+    { id:2, item:"Las Pampas", municipio:"Roboré", precioLocal:15, precioExtranjero:30, rating:4.3, horario:"06:00-17:00", descripcion:"Sabana chiquitana con avistamiento de aves.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZO91wW37n7jLaSxxEmZbeRb9IKfQQbn9v68uteqlNXIec6cqe1S03zcBlZp6ITpB_x2ra7nDQejhus0IiZViCuztGsqiHjL7oaVCjDUNbBGNIiUaKoDv4f0tJCyYKTxsff5zJsqQUEW1ejtdQ=s4800-w800-h600", lat:-18.345, lng:-59.77, googleMaps:"https://maps.app.goo.gl/bCKPCNzh1Vxf9Upt9", distancia:"12 km al norte", transporte:"Taxi o bicicleta", dificultad:"Moderada", experiencia:"Naturaleza, aventura", servicios:"Guías locales", recomendacion:"Calzado cómodo, agua, binoculares" },
+    { id:3, item:"Las Pozas", municipio:"Roboré", precioLocal:15, precioExtranjero:25, rating:4.4, horario:"08:00-17:00", descripcion:"Piscinas naturales entre rocas.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZNXd9ooA3u7sYhMYGa7PCGCjXxS8ylAEX94iEQIfwkP5wQLNcu8BFb4-Se98LcnhEZOaE2--JkfUw7twLh8aIKnr7R887MrL22dWZleL_W2qCbkkjAyhtNvVyxcgXZV0HvANUgkqQdpBtYn=s4800-w800-h600", lat:-18.31, lng:-59.72, googleMaps:"https://maps.app.goo.gl/GkrpywT8gemHU9zW9", distancia:"15 km de Roboré", transporte:"Vehículo o moto", dificultad:"Fácil", experiencia:"Naturaleza, relax", servicios:"Sin infraestructura", recomendacion:"Llevar agua y protector solar" },
+    { id:4, item:"Cuevas de Miserendino", municipio:"Roboré", precioLocal:20, precioExtranjero:35, rating:4.5, horario:"08:00-16:00", descripcion:"Cuevas con estalactitas.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZPyh_rTAqNcoP98yxT0h0fafn2d5-NjDJPTbyJkE8MFX8Lf1Iv3evoWAkGU1MQhE85l_szMQF-eewDt1VO0y5c1z6i1jqeIK6Nv03tzj99oeiCATTbpk0vGadW6hRr24tKL0GrW2Vxn4VPtUm0=s4800-w800-h600", lat:-18.35, lng:-59.78, googleMaps:"https://maps.app.goo.gl/wjC6vqGf1DF4ozdk8", distancia:"25 km de Roboré", transporte:"4x4, caminata 1 km", dificultad:"Moderada", experiencia:"Aventura, exploración", servicios:"Sin servicios", recomendacion:"Linterna, calzado cerrado" },
+    { id:5, item:"El Chorro de San Luis", municipio:"Roboré", precioLocal:20, precioExtranjero:40, rating:4.8, horario:"07:00-17:00", descripcion:"Cascada de 30 m en cañadón rocoso.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZPyh_rTAqNcoP98yxT0h0fafn2d5-NjDJPTbyJkE8MFX8Lf1Iv3evoWAkGU1MQhE85l_szMQF-eewDt1VO0y5c1z6i1jqeIK6Nv03tzj99oeiCATTbpk0vGadW6hRr24tKL0GrW2Vxn4VPtUm0=s4800-w800-h600", lat:-18.36, lng:-59.79, googleMaps:"https://maps.app.goo.gl/b8bAEAvv1Get6S136", distancia:"22 km al sur", transporte:"4x4, últimos 3 km a pie", dificultad:"Moderada", experiencia:"Aventura, naturaleza", servicios:"Sin servicios", recomendacion:"Calzado antideslizante" },
+    { id:6, item:"Los Totaizales", municipio:"Roboré", precioLocal:25, precioExtranjero:45, rating:4.6, horario:"08:00-16:00", descripcion:"Pozas naturales entre rocas milenarias.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZP8dMrNr9D8semwLlond-ANv6KWzwaf9ZXiQWml2MCgv-4VrfYzqC82RGhkd6kga3Y9S8ckfWvrja07OjPSZjPjJBLzfHYPkH7ulk12ncN9i_WGLhimPDRi87NjcfVl98H9zMYvXRpDVM2p=s4800-w800-h600", lat:-18.37, lng:-59.81, googleMaps:"https://maps.app.goo.gl/C1EZQikEALSQmiCx5", distancia:"18 km al oeste", transporte:"Vehículo 4x4", dificultad:"Moderada", experiencia:"Aventura, naturaleza", servicios:"Sin infraestructura", recomendacion:"Calzado para agua" },
+    { id:7, item:"Santuario Mariano de la Torre", municipio:"Chochís", precioLocal:20, precioExtranjero:50, rating:4.4, horario:"09:00-17:00", descripcion:"Complejo histórico y religioso en rocas.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZONoB-ZKELjLo3bOPKZ7LDXi20-UuLnTtsI5c42Dx9RH_-_9-WEd_zG9nPGhCd0JussJUldkXQjQbLjqTDiN58AjmG_s8ZVX0M_q31v9KP3tWTtG_Q-y_zabLNUzVtFwM2O-u7ob0dK0vSGwQ=s4800-w800-h600", lat:-18.15, lng:-60.03, googleMaps:"https://maps.app.goo.gl/dYkvkNKyMkcYGGJQ7", distancia:"30 km de Roboré", transporte:"Bus o taxi", dificultad:"Fácil", experiencia:"Cultural, religioso", servicios:"Baños, estacionamiento", recomendacion:"Ropa adecuada" },
+    { id:8, item:"Cascada de los Helechos", municipio:"Chochís", precioLocal:15, precioExtranjero:30, rating:4.3, horario:"07:00-17:00", descripcion:"Cascada rodeada de helechos gigantes.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZM96-AdvjWNzve3dp9ml6TdSQ7tTQ_K9qi8EWj9n7-l9Mobd82CxEhsEFU18gfsAY_LkIaHDqebruqzZx3IjwPZ9fA6-sy3HYQp2t4EakJfnJPXTANRWF3cyitJ-c3ohQ4gU-6cYT6YCKb7=s4800-w800-h600", lat:-18.16, lng:-60.04, googleMaps:"https://maps.app.goo.gl/RwPbSHwzPqWC8xLy9", distancia:"8 km de Chochís", transporte:"Caminata 30 min", dificultad:"Moderada", experiencia:"Naturaleza, aventura", servicios:"Sin servicios", recomendacion:"Calzado antideslizante" },
+    { id:9, item:"Cascada de Yororoba", municipio:"Aguas Calientes", precioLocal:15, precioExtranjero:30, rating:4.2, horario:"07:00-17:00", descripcion:"Caída de agua con piscinas naturales.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZNMax-z9iVMkCm8NBKB8tvayk3obDe-NcVsXUnWBWGMJ6WSGjg4A3LGOAE4qzc5C_WhOJqV9fL9PZrh3jYsV74Y3Jfdew6QL2_xfxO-Xl8nTOwpVT3LChNdd5fhmHQhjT6DN09EgCRasOfdyRhIpgPe=s4800-w800-h600", lat:-18.37, lng:-59.81, googleMaps:"https://maps.app.goo.gl/SBSekZhz5LY1iroV7", distancia:"40 km de Roboré", transporte:"Vehículo 4x4", dificultad:"Moderada", experiencia:"Aventura, naturaleza", servicios:"Ninguno", recomendacion:"Agua, protector solar" },
+    { id:10, item:"Centro Turístico Los Hervores", municipio:"Roboré", precioLocal:30, precioExtranjero:50, rating:4.0, horario:"08:00-18:00", descripcion:"Aguas termales con pozas relajantes.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZP8CNlPoHXeqQ1vVU6nxSL3dEXmdd6KL7lTzjQdf7twyU09o66isKivscEbAM4DQr518Uf6sxI1Z_5GyMccnj6C-KcINVkIIx9OzRAtCUyh82tMP-rYGW3y1B0usWk5BCmJpSimdbHRZOTYPAI=s4800-w800-h600", lat:-18.33, lng:-59.76, googleMaps:"https://maps.app.goo.gl/u93mMAXRXRNiLjgDA", distancia:"10 km de Roboré", transporte:"Taxi o vehículo particular", dificultad:"Fácil", experiencia:"Relax, salud", servicios:"Baños, vestidores, piscinas", recomendacion:"Llevar traje de baño y toalla" },
+    { id:11, item:"Cascada Velo de Novia", municipio:"Chochís", precioLocal:15, precioExtranjero:40, rating:4.9, horario:"08:00-17:00", descripcion:"Cascada icónica con forma de velo.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZM96-AdvjWNzve3dp9ml6TdSQ7tTQ_K9qi8EWj9n7-l9Mobd82CxEhsEFU18gfsAY_LkIaHDqebruqzZx3IjwPZ9fA6-sy3HYQp2t4EakJfnJPXTANRWF3cyitJ-c3ohQ4gU-6cYT6YCKb7=s4800-w800-h600", lat:-18.16, lng:-60.04, googleMaps:"https://maps.app.goo.gl/QPo1Yjott9w5k2zV7", distancia:"5 km de Chochís", transporte:"Caminata 20 min", dificultad:"Moderada", experiencia:"Naturaleza, aventura", servicios:"Sin servicios", recomendacion:"Calzado antideslizante" }
   ];
+
   const hoteles = [
-    { id:10, nombre:"Los Olivos Tent Camp", ubicacion:"Roboré", precioNoche:207, wifi:true, desayuno:true, rating:4.3, imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZM5TS8ApOdT6g2qTCfyYZjBjY_YlXsJlOUD78-Nc8IacAvZCFSTQEn_vVIrr1rEJxdyfbjQOiYmCaR5K05cTAhGyyRu5cx85BgCkuCLyZQEUDHMXVK_T7TrGwpyE15ADBJ0qbQGcrrbyuNS-dQMwYM_GA=s4800-w800-h600", direccion:"Barrio Central, Roboré" },
-    { id:11, nombre:"Sol y Luna", ubicacion:"Chochís", precioNoche:120, rating:4.0, imagen:"https://lh3.googleusercontent.com/places/ANXAkqEk69qESWsSj3xgkljgfNRaN7szxuPkV3D5iA9nCu00Jjwbv_GhCCT_qbOOXQl3c8cxv13o4WfSXW6R1olmW9k-R_y6SBGaF5Y=s4800-w800-h600", direccion:"Calle principal, Chochís" }
+    { id:10, nombre:"Los Olivos Tent Camp", ubicacion:"Roboré", precioNoche:207, wifi:true, piscina:false, desayuno:true, capacidad:2, rating:4.3, tipo:"3 estrellas", servicios:"Baño privado, TV, restaurante.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZM5TS8ApOdT6g2qTCfyYZjBjY_YlXsJlOUD78-Nc8IacAvZCFSTQEn_vVIrr1rEJxdyfbjQOiYmCaR5K05cTAhGyyRu5cx85BgCkuCLyZQEUDHMXVK_T7TrGwpyE15ADBJ0qbQGcrrbyuNS-dQMwYM_GA=s4800-w800-h600", telefono:"+59176001234" },
+    { id:11, nombre:"Sol y Luna", ubicacion:"Chochís", precioNoche:120, wifi:true, piscina:false, desayuno:false, capacidad:2, rating:4.0, tipo:"Económico", servicios:"Parking gratis, vistas panorámicas.", imagen:"https://lh3.googleusercontent.com/places/ANXAkqEk69qESWsSj3xgkljgfNRaN7szxuPkV3D5iA9nCu00Jjwbv_GhCCT_qbOOXQl3c8cxv13o4WfSXW6R1olmW9k-R_y6SBGaF5Y=s4800-w800-h600", telefono:"+59178554321" },
+    { id:12, nombre:"La Casona de Don Pepe", ubicacion:"Roboré", precioNoche:320, wifi:true, piscina:true, desayuno:true, capacidad:4, rating:4.6, tipo:"Familiar", servicios:"TV cable, garaje, jardín.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZP-nlPkWuxdHJox3QtuEtyLFngzv22SHGM1ozkkYbY-8McG6bZdF9tfJqKl3zj1PgNCUDtvZpH2MVADkMI7kFbR-EY-qDkCADg598zoz2qy4DtelSQUnWI_HvKYCGxJoTdDKS6E60nHSMdraJg-vF5hWQ=s4800-w800-h600", telefono:"+59171343435" },
+    { id:13, nombre:"Hotel 4 Hermanos", ubicacion:"Roboré", precioNoche:180, wifi:true, piscina:false, desayuno:true, capacidad:2, rating:4.1, tipo:"Económico", servicios:"Aire acondicionado, estacionamiento.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZNRnKZ01BqOgQDLl6FxF-bdicY5sU4cxo-dUa2EgEvJwfP7yT0xIto76S6grFuoHotRVhjvQSOApgpcZz4PuDIdjEEmIv0eWV2X7nDdaA0FqmwTKvUb6EYdcvxwpOmH5Z8NNgW_HnDGrFCWVqQEEArmlQ=s4800-w800-h600", telefono:"+59173456789" },
+    { id:14, nombre:"Hotel Luna Cambita", ubicacion:"Chochís", precioNoche:150, wifi:false, piscina:false, desayuno:true, capacidad:2, rating:3.9, tipo:"Posada", servicios:"Jardín, terraza, desayuno incluido.", imagen:"https://lh3.googleusercontent.com/places/ANXAkqH0HQ7IGdHEKklq3RNXAE3bnoP78_Zek600x_W3cM75-yFQFn1TZGyzjy-c1uuIOnqVRoKnzoiT7EMfMGXDwAs7NivIynz66xI=s4800-w800-h600", telefono:"+59174567890" },
+    { id:15, nombre:"Hotel La Masía", ubicacion:"Roboré", precioNoche:250, wifi:true, piscina:true, desayuno:true, capacidad:3, rating:4.5, tipo:"4 estrellas", servicios:"Spa, gimnasio, restaurante.", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZPIeZI5OwfwKxSNj5OirRx73GsWrhDQuSd6lDUrNYjIz4ggYfUzsKi6b1XvmcXtq5WhgYSmfPYytLuAYUmlgFVJAhWfnUyhSApKMhOLoiNfkVu1vs4aq1rV0PzDiCiRfsU0dyIDAjB0hKWE=s4800-w800-h600", telefono:"+59175678901" },
+    { id:16, nombre:"Cabañas Chochís", ubicacion:"Chochís", precioNoche:200, wifi:true, piscina:false, desayuno:false, capacidad:4, rating:4.2, tipo:"Cabaña", servicios:"Cocina equipada, parrilla, estacionamiento.", imagen:"https://lh3.googleusercontent.com/places/ANXAkqH0HQ7IGdHEKklq3RNXAE3bnoP78_Zek600x_W3cM75-yFQFn1TZGyzjy-c1uuIOnqVRoKnzoiT7EMfMGXDwAs7NivIynz66xI=s4800-w800-h600", telefono:"+59176789012" }
   ];
+
   const restaurantes = [
-    { id:50, item:"Restaurant El Molino", ubicacion:"Roboré", precioAlmuerzo:60, precioCena:55, tipo:"Carnes", imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-6/337036665_603181391684536_5812270285193517072_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=KRs7lt_P4h8Q7kNvwFlVno2&_nc_oc=AdrdF_10ulu0Y0-R30qHkgliqjSQImK1fcH4RlcBQhwsLpPz7k0MRVPltkFm5G_mpcI&_nc_zt=23&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=fi2jz_jgf-Dm4c4GwQBTHw&_nc_ss=7b289&oh=00_Af9hYCCYe6P87mMlrH-5mXjmhinphRq06lFhOu3TPMzJlg&oe=6A22957D", direccion:"Calle Bolívar esq. Sucre, Roboré" }
+    { id:50, item:"Restaurant El Molino", ubicacion:"Roboré", precioDesayuno:30, precioAlmuerzo:60, precioCena:55, tipo:"Carnes", horario:"07:00-22:00", especialidad:"Especialidad en carnes a la parrilla.", wifi:true, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-6/337036665_603181391684536_5812270285193517072_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=KRs7lt_P4h8Q7kNvwFlVno2&_nc_oc=AdrdF_10ulu0Y0-R30qHkgliqjSQImK1fcH4RlcBQhwsLpPz7k0MRVPltkFm5G_mpcI&_nc_zt=23&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=fi2jz_jgf-Dm4c4GwQBTHw&_nc_ss=7b289&oh=00_Af9hYCCYe6P87mMlrH-5mXjmhinphRq06lFhOu3TPMzJlg&oe=6A22957D", googleMaps:"https://maps.app.goo.gl/mZjkzFyzHXaBVXbU8", facebook:"https://www.facebook.com/ElMolinoRobore/", direccion:"Calle Bolívar esq. Sucre, Roboré", capacidad:"60 personas", recomendacion:"Probá el churrasco de lomo. Ambiente familiar." },
+    { id:51, item:"Café París", ubicacion:"Roboré", precioDesayuno:25, precioAlmuerzo:45, precioCena:40, tipo:"Cafetería", horario:"07:30-21:00", especialidad:"Café de especialidad y repostería.", wifi:true, imagen:"https://lh3.googleusercontent.com/gps-cs-s/APNQkAHtS5ZAOqYjIzZCvhalIa_WDF8d-rTMaTXooPBcU-rboS0eAImV94lYr5cCnBXfs2-38CtMjqz8ST4OyvOWlxeTnwTUCAux4SBg9zyv0YrcnAuIwCxWp7w6GrLz4k8tlTeAiRZH=w426-h240-k-no", googleMaps:"https://maps.app.goo.gl/fijQCwRvSmC1d41b8", facebook:"https://www.facebook.com/people/Café-París/100063216401687/", direccion:"Calle principal, Roboré", capacidad:"30 personas", recomendacion:"Café de altura y croissants. Ambiente acogedor." },
+    { id:52, item:"Deleite Café Roboré", ubicacion:"Roboré", precioDesayuno:20, precioAlmuerzo:40, precioCena:35, tipo:"Cafetería", horario:"07:00-20:00", especialidad:"Café y postres artesanales.", wifi:true, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-1/283117736_510717527426558_9137134609249063572_n.jpg?stp=c0.0.707.707a_dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=ZfJffgfSPEsQ7kNvwHnB5_O&_nc_oc=AdpO2w9VdUMQPDNdRptup4iyTbtLyS8HDA01ULjPkZSE-ri7zH6gNLVkVmgaEcorzjc&_nc_zt=24&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=SzhB6khRfqawqekn10Fulg&_nc_ss=7b289&oh=00_Af9crtxqPDQqjMduHGtObGmkSBjtFLryzouw36Qp_4hNzA&oe=6A229192", googleMaps:"https://maps.app.goo.gl/WUmEr6r8cf2WkH1UA", facebook:"https://www.facebook.com/DeleitecafeRobore/", direccion:"Zona céntrica, Roboré", capacidad:"20 personas", recomendacion:"Tarta de limón y capuchino. Lugar tranquilo." },
+    { id:53, item:"El Messón!", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:50, precioCena:45, tipo:"Familiar", horario:"07:30-21:30", especialidad:"Comida casera y platos típicos.", wifi:false, imagen:"https://scontent.fvvi1-1.fna.fbcdn.net/v/t39.30808-6/469021885_602359612449734_3723946523578340001_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=108&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=2kOkBq0EJsIQ7kNvwFC7-23&_nc_oc=AdqOPwaLLdShf4hV4bKa40D60B0wDNXougyqNFt-sFVUmAsp5xfc6Qo73dao3eZecBc&_nc_zt=23&_nc_ht=scontent.fvvi1-1.fna&_nc_gid=XKmDfbCM1Q63wyj7jUvU6w&_nc_ss=7b289&oh=00_Af8_qThk4h_Q00QfAnWeuXA0iuvym3VgeVcCodzbY0-LnQ&oe=6A229BFC", googleMaps:"https://maps.app.goo.gl/utAivAh4FNRTmnFv9", facebook:"https://www.facebook.com/people/El-Messon-Robore/100083345618656/", direccion:"Av. Principal, Roboré", capacidad:"40 personas", recomendacion:"Plato del día y jugos naturales. Atención rápida." },
+    { id:54, item:"Restaurant Los Lomitos", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:55, precioCena:50, tipo:"Parrilla", horario:"08:00-22:00", especialidad:"Lomitos y carnes a la parrilla.", wifi:true, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-6/474778789_641772888172685_2435242871698480493_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=106&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=Frd-YT0Y96gQ7kNvwEbTPCb&_nc_oc=Adq_T4vgDGLRXiX_o34768xDbOd_OAinCVTmfDsr8EGCKq4uxMk7hJM0dUINJwcIN4Q&_nc_zt=23&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=kEFLmNj7_tixPhl9lhqZsg&_nc_ss=7a289&oh=00_Af-D-JaQE8x1oQ3ERs-x3z6Fsa187eVDTd2PENY7B6mOEw&oe=6A228F23", googleMaps:"https://maps.app.goo.gl/j5LARzHgYq2qmTQU7", facebook:"https://www.facebook.com/people/Los-lomitos-tatay-en-roboré/100070199386114/", direccion:"Calle Comercio, Roboré", capacidad:"35 personas", recomendacion:"Lomito jugoso con papas fritas. Buena relación precio-calidad." },
+    { id:55, item:"Hotel Restaurant Cruz Blanca", ubicacion:"Roboré", precioDesayuno:30, precioAlmuerzo:65, precioCena:60, tipo:"Hotelero", horario:"07:00-22:00", especialidad:"Menú internacional y platos regionales.", wifi:true, imagen:"https://scontent.fvvi1-1.fna.fbcdn.net/v/t39.30808-1/299320169_479895794142158_5456965298328729541_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=RHSrJikpqjAQ7kNvwFQWrPd&_nc_oc=Adq6W9sw6EE0BKK4fJe8vlozZZQZEXHPmv2-ZpyPj-IMAz-o5Zcf1mleG1NUN4T_3tE&_nc_zt=24&_nc_ht=scontent.fvvi1-1.fna&_nc_gid=UQvB1dMnX8lgYYNWfyEKWQ&_nc_ss=7b289&oh=00_Af-xflxb3K9izhRO075QJrenvGvbeDtAK2Lxj-x3OqtC5g&oe=6A22A15E", googleMaps:"https://maps.app.goo.gl/uEFQBm5uLT1JSXQS9", facebook:"https://www.facebook.com/HotelCruzBlancaRobore/", direccion:"Calle principal, Roboré", capacidad:"50 personas", recomendacion:"Cena formal con variedad de platos. Buen servicio." },
+    { id:56, item:"El Sazón de Mimín", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:35, precioCena:30, tipo:"Casera", horario:"07:00-19:00", especialidad:"Comida casera tradicional.", wifi:false, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-1/244265629_773963833389952_201514903463391965_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=02HUId3pcpIQ7kNvwFOJccW&_nc_oc=AdrP4qUHwrWtMBqf2_oDn8iJ4UaT7yH9o-BkdGoLG1Kd4lkwrhnv0l7-sxedlaM0zWE&_nc_zt=24&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=asyjstJlvlZRcgUL4smULw&_nc_ss=7b289&oh=00_Af_2Dj53BzHRekBO0ZrrI7nnGCTAOJWK_hIYVdsiPWAGnA&oe=6A228C4F", googleMaps:"https://maps.app.goo.gl/JeBeuXr3Kr8WG63g7", facebook:"https://www.facebook.com/Restaurante.Mimin/", direccion:"Zona sur, Roboré", capacidad:"25 personas", recomendacion:"Sopa de maní todos los días. Comida como en casa." },
+    { id:57, item:"A LO GRILL", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:50, precioCena:45, tipo:"Parrilla", horario:"11:00-23:00", especialidad:"Parrilladas y cortes de carne.", wifi:true, imagen:"https://scontent.fvvi1-1.fna.fbcdn.net/v/t39.30808-1/300415670_109548758544299_250468400671182507_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=110&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=HGG4jzfiYIsQ7kNvwEOZKTr&_nc_oc=AdraVfatXw71pMiThWamfN_bF7BxQfmQKD4cm0aWazFxDn5aD-6xVtHsDGcN6qd2BBU&_nc_zt=24&_nc_ht=scontent.fvvi1-1.fna&_nc_gid=7gF2yUdaT6Hu9MWi8mqI9w&_nc_ss=7b289&oh=00_Af_xsYqp4LWK9OGTszv7IM7kia0zH169-SaFncLE-oJstg&oe=6A22891C", googleMaps:"https://maps.app.goo.gl/ouaTCatojBZ73Qzi9", facebook:"https://www.facebook.com/people/A-lo-Grill-Robore/100084755334417/", direccion:"Calle sin salida, Roboré", capacidad:"30 personas", recomendacion:"Parrillada mixta con guarnición. Ambiente juvenil." },
+    { id:58, item:"Pacumutos - El Pila", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:40, precioCena:35, tipo:"Rápida", horario:"10:00-21:00", especialidad:"Pacumutos (brochetas) y comida rápida.", wifi:false, imagen:"https://lh3.googleusercontent.com/gps-cs-s/APNQkAEJaBeVGzkhKF7GipSgFBqOJxCgwqnkGY4KT4nr4EmMrNOSOsq510cTGa6vMpIS04GABGSy2p56dlJywx5gwlbScFJDTHtdo1RV-mYSHkKNWA9I9Xr8Y91Y-EnIrUilpMfsPQLH=w408-h432-k-no", googleMaps:"https://maps.app.goo.gl/6zJjpMpd9JGisCpRA", facebook:"", direccion:"Calle del estudiante, Roboré", capacidad:"20 personas", recomendacion:"Brochetas de carne y pollo. Rápido y sabroso." },
+    { id:59, item:"Saborcitos Abu Ta Ta", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:30, precioCena:25, tipo:"Comedor", horario:"07:00-18:00", especialidad:"Comida casera y meriendas.", wifi:false, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-6/300516148_467890072013531_1993871833556805305_n.png?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=9rx1fM87YZYQ7kNvwFGMDQD&_nc_oc=Adq4TC6xN5QxoCBJbnfOPo_ZFZ_oK0Q7X_wMWUhqOr3-stItopKxj6GsY6ypDXDu7yQ&_nc_zt=23&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=2Ml8Xc3P0eT9CbatXbmA_g&_nc_ss=7b289&oh=00_Af8qvHo3B8H24naBybBRjPYeW2P8IaGaGIj444tO_M1kJA&oe=6A228DF9", googleMaps:"https://maps.app.goo.gl/oH6TLXRMtjsaPrr9A", facebook:"https://www.facebook.com/people/Saborcitos-AbuTata/100063776271614/", direccion:"Calle Sucre, Roboré", capacidad:"20 personas", recomendacion:"Comida económica y sabrosa. Ideal para almuerzo rápido." },
+    { id:60, item:"Chicken Mania", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:45, precioCena:40, tipo:"Rápida", horario:"11:00-22:00", especialidad:"Pollo frito y hamburguesas.", wifi:false, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-1/244701674_108336371622276_5339204813440654345_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=109&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=bjrAFdVbJRAQ7kNvwGLavcD&_nc_oc=AdondHxqdmxlj6z7XKRi6U9ipaWHYMKvoOSIUqUL8NjDGieg1A6wqnQ8binbFWZzu0M&_nc_zt=24&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=W7qZlbkGVjgU3yFQvDZ4NA&_nc_ss=7b289&oh=00_Af9xfxbzHqoii2Ip-0FaLL9P3vzCHjJnnrssTEOn4WeQuw&oe=6A22A51E", googleMaps:"https://maps.app.goo.gl/M3iCPkLVZhzRgTxe7", facebook:"https://www.facebook.com/chickenmaniaec/", direccion:"Esquina plaza, Roboré", capacidad:"20 personas", recomendacion:"Pollo crujiente y papas fritas. Para jóvenes." },
+    { id:61, item:"Repostería Japonesa Roboré", ubicacion:"Roboré", precioDesayuno:25, precioAlmuerzo:35, precioCena:30, tipo:"Repostería", horario:"08:00-20:00", especialidad:"Postres japoneses y café.", wifi:true, imagen:"https://scontent.fvvi1-1.fna.fbcdn.net/v/t39.30808-1/292437848_718212689601786_127807650187989186_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=0VziiSeQKVUQ7kNvwElyURm&_nc_oc=AdqrGfsaPAmi00MY1wDBJbLTGDhzPciEpxcBeIBkWq2iZuwIPDwyjFDEnoEXtVUVzPw&_nc_zt=24&_nc_ht=scontent.fvvi1-1.fna&_nc_gid=aBndottH-NWm3uDQUplCOQ&_nc_ss=7b289&oh=00_Af9IZ5mcOhz9QjLa9Mss_MI8MuBYbeZnMEwPOye5QV962g&oe=6A228B12", googleMaps:"https://maps.app.goo.gl/cLCTVpeZnAf5pzRi6", facebook:"https://www.facebook.com/ReposteriaJaponesaRobore/", direccion:"Centro, Roboré", capacidad:"15 personas", recomendacion:"Mochis y pastel de matcha. Algo diferente y delicioso." },
+    { id:62, item:"Restauran La Clave", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:45, precioCena:40, tipo:"Familiar", horario:"07:00-21:00", especialidad:"Platos típicos y menú del día.", wifi:false, imagen:"https://lh3.googleusercontent.com/gps-cs-s/APNQkAEd_ZueuQthZzW4zjVPevE9jwW5bMXURqdosAhDRadvJZPj_5MRbxKnDBaNh-9VNQc8vKyfpa85Odl_OgoE_W3L8Pqpc4-iiHruVaENh5jGLuta2fwlbwLBVSoU0pYqNk6Xwenu=w546-h240-k-no", googleMaps:"https://maps.app.goo.gl/YKknAPxVYca5ZKio9", facebook:"", direccion:"Calle Bolívar, Roboré", capacidad:"30 personas", recomendacion:"Menú económico y completo. Buena sazón." },
+    { id:63, item:"Sabores C&L", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:40, precioCena:35, tipo:"Casera", horario:"07:30-20:00", especialidad:"Comida casera y snacks.", wifi:false, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-1/301049697_592422709131531_8694679011798274721_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=LPMs7WMItSwQ7kNvwEXBlE3&_nc_oc=AdqJ2rmn4DraomA8P9lXv_UhSjqdJtVqit2Krmwf5WONB1EdfXRuBINw0VEQysjnTe4&_nc_zt=24&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=jq-SaAwAQlnM7V459kDseg&_nc_ss=7b289&oh=00_Af80MN0z0ziRSLfGkoIkmXPRGMQWEMN1gzMjFr1z5Sbqcg&oe=6A2280D4", googleMaps:"https://maps.app.goo.gl/hZUMu4AaegAivVjS6", facebook:"https://www.facebook.com/people/Sabores-CL-Roboré/100050914211169/", direccion:"Zona norte, Roboré", capacidad:"25 personas", recomendacion:"Comida casera rápida. Buena atención." },
+    { id:64, item:"Snack Barriga llena", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:30, precioCena:25, tipo:"Snack", horario:"08:00-19:00", especialidad:"Snacks, jugos y meriendas.", wifi:false, imagen:"https://scontent.fvvi1-2.fna.fbcdn.net/v/t39.30808-1/654199283_929889396457815_5377830409330294286_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=8kpVoxIYhiAQ7kNvwHqDPI2&_nc_oc=AdrpLMyUKEVC0CSLW--ePT38hNucsZYWCoKDAKtcdlni4yI1zVtSwn-pGvPfoUtmHVo&_nc_zt=24&_nc_ht=scontent.fvvi1-2.fna&_nc_gid=GE-lmm20IxSO8t6SdA0QVQ&_nc_ss=7b289&oh=00_Af-B9XuFl_dB_9ucFXVTJxzjADwokxPUwJTIE3sHzonT9g&oe=6A22A047", googleMaps:"https://maps.app.goo.gl/tpjE1yiAmriGwUE66", facebook:"https://www.facebook.com/Barrigallenacorazoncontento07/", direccion:"Frente al mercado, Roboré", capacidad:"15 personas", recomendacion:"Jugos naturales y sándwiches. Económico y rápido." },
+    { id:65, item:"Restaurante Pescadería Ruiz", ubicacion:"Roboré", precioDesayuno:0, precioAlmuerzo:55, precioCena:50, tipo:"Pescados", horario:"08:00-21:00", especialidad:"Pescados y mariscos frescos.", wifi:false, imagen:"https://lh3.googleusercontent.com/gps-cs-s/APNQkAGz1QygErWPcnYYM0tuGg_tyNEjrIg4Z6eON3a4xX_roCGt9qeCU3LXFHR8TJsUkcsV_Z72CbchqC1BwD23epXtfnyWkF0K5vWDajs2GE5x30SMQoQWTpovglzE-TDc_XiPFbh4eIj3JvE=w426-h240-k-no", googleMaps:"https://maps.app.goo.gl/9kjYpsEqrjsCsx6M6", facebook:"https://www.facebook.com/people/Pescaderia-RUIZ/61560413805202/", direccion:"Calle del río, Roboré", capacidad:"25 personas", recomendacion:"Pacú frito con yuca. Pescado fresco del día." }
   ];
+
   const transportes = [
-    { id:40, empresa:"Buses 23 de Marzo", tipo:"Leito", precio:130, ruta:"Santa Cruz–Roboré", imagen:"https://dynamic-media-cdn.tripadvisor.com/media/photo-o/27/f8/50/85/melhor-empresa-de-transporte.jpg?w=700&h=-1&s=1", esVehiculoPropio:false },
-    { id:46, empresa:"Vehículo personal", tipo:"Auto", precio:0, ruta:"Según ruta", imagen:"https://carnovo.com/wp-content/uploads/2018/08/cupra-leon-sportstourer.jpg", esVehiculoPropio:true }
+    { id:40, empresa:"Buses 23 de Marzo", tipo:"Leito/Suite", precio:130, horario:"10:30/20:00", ruta:"Santa Cruz–Roboré", imagen:"https://dynamic-media-cdn.tripadvisor.com/media/photo-o/27/f8/50/85/melhor-empresa-de-transporte.jpg?w=700&h=-1&s=1", telefono:"+59168580990", esVehiculoPropio:false },
+    { id:41, empresa:"Champion Bus", tipo:"Estándar", precio:150, horario:"07:30/14:00", ruta:"Santa Cruz–Roboré", imagen:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLPuOP6UK2AsssiqdvBYAhxnM89mneiU3OgQ&s", telefono:"+59172124096", esVehiculoPropio:false },
+    { id:42, empresa:"Expreso Chiquitano", tipo:"Semi cama", precio:120, horario:"08:00/21:00", ruta:"Santa Cruz–Roboré", imagen:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp2w2iSwHTeZmJrGYpSigl6mtOETxAuekegA&s", telefono:"+59175678901", esVehiculoPropio:false },
+    { id:43, empresa:"Trans Oriente Sur", tipo:"Cama", precio:160, horario:"11:00/23:00", ruta:"Santa Cruz–Chochís", imagen:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT56rKHvDM651q9_lorc38rVT3iKDzIHGHZ1Q&s", telefono:"+59176789012", esVehiculoPropio:false },
+    { id:44, empresa:"NOHA (Trufi)", tipo:"Minibús", precio:25, horario:"05:00-20:00", ruta:"Local Roboré-Chochís", imagen:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLr5hkAGjVME1usnk9A6s2bZOuByRuhVBnMw&s", telefono:"+59177890123", esVehiculoPropio:false },
+    { id:45, empresa:"Ferrobús (Ferroviaria Oriental)", tipo:"Tren", precio:80, horario:"Según itinerario", ruta:"Santa Cruz–Roboré", imagen:"https://lh3.googleusercontent.com/place-photos/AJRVUZOwTbVlbEXtG2NxWb3ZLSYz-_hZNBu42lGLJm584yuQzZnh_7Cn--ovvGFNfSSLtQR7tqOhW5p8Yj5UT5s_sYPfjCOOiacMGWMHf6bNH-cW523Q0nqZyqOEwdFFMekzRB-nsTzUZXW-8cPAYvE=s4800-w800-h600", telefono:"+59178901234", esVehiculoPropio:false },
+    { id:46, empresa:"Vehículo personal", tipo:"Auto", precio:0, horario:"Libre", ruta:"Según ruta", imagen:"https://carnovo.com/wp-content/uploads/2018/08/cupra-leon-sportstourer.jpg", telefono:"N/A", esVehiculoPropio:true }
   ];
-  const ciudadesBolivia = { "santa-cruz":{nombre:"Santa Cruz",lat:-17.7833,lng:-63.1821} };
-  const destinos = { "roboré":{nombre:"Roboré",lat:-18.3328,lng:-59.7583} };
+
+  const ciudadesBolivia = {
+    "santa-cruz":{nombre:"Santa Cruz",lat:-17.7833,lng:-63.1821},
+    "cochabamba":{nombre:"Cochabamba",lat:-17.4139,lng:-66.1653},
+    "la-paz":{nombre:"La Paz",lat:-16.5,lng:-68.15},
+    "sucre":{nombre:"Sucre",lat:-19.0474,lng:-65.2596},
+    "tarija":{nombre:"Tarija",lat:-21.5355,lng:-64.7296},
+    "potosi":{nombre:"Potosí",lat:-19.5836,lng:-65.7531},
+    "oruro":{nombre:"Oruro",lat:-17.9833,lng:-67.15},
+    "trinidad":{nombre:"Trinidad",lat:-14.8333,lng:-64.9}
+  };
+  const destinos = {
+    "roboré":{nombre:"Roboré",lat:-18.3328,lng:-59.7583},
+    "chochis":{nombre:"Chochís",lat:-18.15,lng:-60.03},
+    "aguascalientes":{nombre:"Aguas Calientes",lat:-18.25,lng:-59.55}
+  };
   const TARIFA_POR_KM = 2.5;
-  const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzdm-jNrmwODTWSPGo3bSmULaetDaEfONZ9DkA2Q9bIorTd5rMY1oab7oUTd0gD0KCo/exec'; // REEMPLAZAR
+  const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzdm-jNrmwODTWSPGo3bSmULaetDaEfONZ9DkA2Q9bIorTd5rMY1oab7oUTd0gD0KCo/exec';
 
-  let currentUser = JSON.parse(localStorage.getItem('rojobore_user')||'null');
   let selectedItems = { turismo:[], restaurante:null, hotel:null, transporte:null };
-  let fullMap = null; let currentSection = 'hero';
-  let calcMap, calcRouteLine, calcRutaDist=0, calcRutaTarifa=0;
+  let currentUser = JSON.parse(localStorage.getItem('rojobore_user')||'null');
+  let calcMap = null, calcRouteLine = null;
+  let planRutaDist = 0, planRutaTarifa = 0;
+  let calcRutaDist = 0, calcRutaTarifa = 0;
+  let panelMap = null, fullMap = null;
+  let panelMarkers = [];
 
-  function showToast(m){ let t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2500); }
-  function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.body.classList.toggle('sidebar-open'); }
-  function contactSupport(){ if(!currentUser){ showToast('Regístrate primero'); return; } window.open('https://wa.me/59171607412?text=Hola%20Rojobore'); }
-
-  // REGISTRO / LOGIN EXISTENTE
-  function registerOrLogin(){
-    let name=document.getElementById('regName').value.trim(), email=document.getElementById('regEmail').value.trim(), phone=document.getElementById('regPhone').value.trim();
-    if(!email) return showToast('Correo requerido');
-    let existing = localStorage.getItem('rojobore_user');
-    if(existing){
-      let u = JSON.parse(existing);
-      if(u.email === email){
-        currentUser = u;
-        localStorage.setItem('rojobore_user', JSON.stringify(currentUser));
-        document.getElementById('regOverlay').style.display='none';
-        updateUserUI();
-        showToast(`Bienvenido de nuevo ${currentUser.name}`);
-        return;
-      }
-    }
-    if(!name || !phone) { showToast('Completa nombre y teléfono'); return; }
-    currentUser = { name, email, phone };
-    localStorage.setItem('rojobore_user', JSON.stringify(currentUser));
-    document.getElementById('regOverlay').style.display='none';
-    updateUserUI();
-    showToast(`✅ Registro exitoso ${name}`);
-    sendToSheets({type:'new_user',userName:name,userEmail:email,userPhone:phone});
+  // ===== SIDEBAR =====
+  function toggleSidebar(){
+    document.getElementById('sidebar').classList.toggle('open');
+    document.body.classList.toggle('sidebar-open');
+    if(panelMap)setTimeout(()=>panelMap.invalidateSize(),350);
+    if(fullMap)setTimeout(()=>fullMap.invalidateSize(),350);
   }
-  function updateUserUI(){
-    if(currentUser){
-      document.getElementById('sidebarUser').style.display='flex';
-      document.getElementById('sidebarUserName').innerHTML=currentUser.name.split(' ')[0];
-    } else { document.getElementById('sidebarUser').style.display='none'; }
-  }
-  function logout(){ currentUser=null; localStorage.removeItem('rojobore_user'); updateUserUI(); showToast('Sesión cerrada'); location.reload(); }
 
-  async function sendToSheets(d){ try{ await fetch(GOOGLE_SHEETS_URL, {method:'POST',mode:'no-cors',body:JSON.stringify(d)}); }catch(e){} }
-
-  // NAVEGACIÓN CON COLORES DINÁMICOS
+  // ===== NAVEGACIÓN POR SECCIONES =====
+  let currentSection = 'hero';
   function showSection(name){
-    if(!currentUser && name!=='hero'){ showToast('Regístrate primero'); return; }
-    currentSection = name;
-    document.getElementById('section-hero').style.display='none';
-    document.getElementById('section-panel').style.display='none';
-    document.getElementById('section-mapa').style.display='none';
-    if(name==='hero') document.getElementById('section-hero').style.display='';
-    else if(name==='mapa'){ document.getElementById('section-mapa').style.display='flex'; initFullMap(); }
-    else{
-      document.getElementById('section-panel').style.display='flex';
-      loadCategoryPanel(name);
+    if(!currentUser && name !== 'hero'){
+      showToast('Regístrate primero');
+      document.getElementById('regOverlay').classList.remove('hidden');
+      return;
     }
+    currentSection = name;
     document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
-    document.getElementById(`nav-${name}`)?.classList.add('active');
+    const navEl = document.getElementById('nav-'+name);
+    if(navEl) navEl.classList.add('active');
+    document.getElementById('section-hero').style.display = 'none';
+    document.getElementById('section-panel').style.display = 'none';
+    document.getElementById('section-mapa').style.display = 'none';
+    if(name === 'hero'){
+      document.getElementById('section-hero').style.display = '';
+    } else if(name === 'mapa'){
+      document.getElementById('section-mapa').style.display = '';
+      setTimeout(()=>initFullMap(),100);
+    } else {
+      document.getElementById('section-panel').style.display = 'flex';
+      loadPanel(name);
+    }
   }
 
-  function loadCategoryPanel(cat){
-    let items=[], title='', icon='';
-    if(cat==='turismo'){ items=lugaresTuristicos; title='Lugares turísticos'; icon='🌿'; document.getElementById('section-panel').style.background='#0A2A1A'; }
-    if(cat==='hoteles'){ items=hoteles; title='Hoteles'; icon='🏨'; document.getElementById('section-panel').style.background='#2C0E14'; } // rojo pasión
-    if(cat==='restaurantes'){ items=restaurantes; title='Restaurantes'; icon='🍽️'; document.getElementById('section-panel').style.background='#1F0A3A'; } // violeta
-    if(cat==='transporte'){ items=transportes; title='Transporte'; icon='🚌'; document.getElementById('section-panel').style.background='#0A1F3A'; } // azul
-    document.getElementById('panelIcon').innerHTML=icon;
-    document.getElementById('panelTitle').innerHTML=title;
-    document.getElementById('panelCount').innerHTML=items.length;
-    const container=document.getElementById('panelList');
-    container.innerHTML=items.map(item=>{
-      let nombre=item.nombre||item.item||item.empresa;
-      let precio=item.precioLocal?`Bs ${item.precioLocal}`:(item.precioNoche?`Bs ${item.precioNoche}/noche`:(item.precio?`Bs ${item.precio}`:item.esVehiculoPropio?'Auto propio':''));
-      let img=item.imagen||'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400';
-      let id=item.id;
-      return `<div class="item-card" onclick="openDetailDrawer('${cat}', ${id})">
-        <img class="item-img" src="${img}" onerror="this.src='https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400'">
-        <div class="item-info"><div class="item-title">${nombre}</div><div class="item-meta">${item.ubicacion||item.municipio||''} · ${precio}</div></div>
-      </div>`;
-    }).join('');
+  const panelConfig = {
+    turismo: { icon:'🏖️', title:'Lugares turísticos' },
+    hoteles: { icon:'🏨', title:'Hoteles' },
+    restaurantes: { icon:'🍽️', title:'Restaurantes' },
+    transporte: { icon:'🚌', title:'Transporte' }
+  };
+
+  let restPage = 0;
+  const REST_PER_PAGE = 6;
+
+  function loadPanel(name){
+    const cfg = panelConfig[name];
+    document.getElementById('panelIcon').textContent = cfg.icon;
+    document.getElementById('panelTitle').textContent = cfg.title;
+    let items = [], renderFn, municipioField = 'municipio';
+    if(name==='turismo'){ items=lugaresTuristicos; renderFn=renderTurismoRow; municipioField='municipio'; }
+    else if(name==='hoteles'){ items=hoteles; renderFn=renderHotelRow; municipioField='ubicacion'; }
+    else if(name==='restaurantes'){ items=restaurantes; renderFn=renderRestauranteRow; municipioField='ubicacion'; }
+    else if(name==='transporte'){ items=transportes; renderFn=renderTransporteRow; municipioField=null; }
+    document.getElementById('panelCount').textContent = items.length + ' opciones';
+
+    const panelList = document.getElementById('panelList');
+    const scrollBtn = document.getElementById('scrollDownBtn');
+    panelList.style.display = 'block';
+    panelList.style.gridTemplateColumns = '';
+    panelList.onscroll = null;
+    scrollBtn.style.display = 'none';
+
+    if(municipioField){
+      renderConTabs(name, items, renderFn, municipioField, 'Roboré');
+    } else {
+      // Transporte: sin tabs, mostrar todos
+      panelList.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:2.5rem;">
+          ${items.map(renderFn).join('')}
+        </div>`;
+    }
+
+    const mapWrap = document.getElementById('panelMapWrap');
+    if(name === 'transporte'){
+      mapWrap.style.display = 'block';
+      setTimeout(()=>initPanelMap(name, items), 120);
+    } else {
+      mapWrap.style.display = 'none';
+    }
   }
 
-  function openDetailDrawer(cat, id){
-    let data;
-    if(cat==='turismo') data=lugaresTuristicos.find(x=>x.id===id);
-    if(cat==='hoteles') data=hoteles.find(x=>x.id===id);
-    if(cat==='restaurantes') data=restaurantes.find(x=>x.id===id);
-    if(cat==='transporte') data=transportes.find(x=>x.id===id);
-    if(!data) return;
-    const drawerHtml = `<div style="padding:1rem;">
-      <h3 style="color:var(--gold);">${data.nombre||data.item||data.empresa}</h3>
-      <p>📍 Dirección: ${data.direccion||data.ubicacion||data.municipio||'No especificada'}</p>
-      <p>⭐ ${data.rating||''} · Precio: ${data.precioLocal?`Bs${data.precioLocal}`:data.precioNoche?`Bs${data.precioNoche}/noche`:'Consultar'}</p>
-      <p>${data.descripcion||data.servicios||data.especialidad||''}</p>
-      <button onclick="addToPlan('${cat}',${id})" style="background:var(--neon-green); border:none; padding:0.5rem 1rem; border-radius:30px; margin-top:1rem;">➕ Agregar al plan</button>
-    </div>`;
-    document.getElementById('drawerBody').innerHTML=drawerHtml;
-    document.getElementById('detailDrawer').style.transform='translateX(0)';
-    document.getElementById('drawerOverlay').style.display='block';
-  }
-  function addToPlan(cat,id){
-    if(cat==='turismo'){ if(!selectedItems.turismo.includes(id) && selectedItems.turismo.length<4) selectedItems.turismo.push(id); else showToast('Máx 4 lugares'); }
-    if(cat==='hoteles') selectedItems.hotel=id;
-    if(cat==='restaurantes') selectedItems.restaurante=id;
-    if(cat==='transporte') selectedItems.transporte=id;
-    showToast('Agregado a tu plan');
-  }
-  function closeDrawer(){ document.getElementById('detailDrawer').style.transform='translateX(100%)'; document.getElementById('drawerOverlay').style.display='none'; }
+  function renderConTabs(panelName, items, renderFn, municipioField, municipioActivo){
+    const panelList = document.getElementById('panelList');
+    const municipios = [
+      { nombre:'Roboré', emoji:'🏘️' },
+      { nombre:'Chochís', emoji:'⛪' },
+      { nombre:'Aguas Calientes', emoji:'♨️' }
+    ];
 
-  // RULETA SORPRESA
-  function showRoulette(){
-    if(!currentUser) return showToast('Regístrate primero');
-    const modal = document.createElement('div'); modal.className='roulette-modal';
-    modal.innerHTML = `<div class="roulette-card"><h3 style="color:var(--gold);">✨ Ruta Sorpresa ✨</h3><div id="rouletteText" class="roulette-spin">🍀 Girando...</div><button class="btn-roulette" id="stopRoulette">¡Detener!</button></div>`;
-    document.body.appendChild(modal);
-    let interval; let count=0;
-    const opciones = { hotel: hoteles[Math.floor(Math.random()*hoteles.length)], rest: restaurantes[Math.floor(Math.random()*restaurantes.length)], trans: transportes.filter(t=>!t.esVehiculoPropio)[0], acts: lugaresTuristicos.slice(0,2) };
-    const spin = () => {
-      const randH = hoteles[Math.floor(Math.random()*hoteles.length)];
-      const randR = restaurantes[Math.floor(Math.random()*restaurantes.length)];
-      const randT = transportes.filter(t=>!t.esVehiculoPropio)[0];
-      document.getElementById('rouletteText').innerHTML = `${randH.nombre} | ${randR.item} | ${randT.empresa}`;
-    };
-    interval = setInterval(spin, 80);
-    document.getElementById('stopRoulette').onclick = ()=>{
-      clearInterval(interval);
-      const finalHotel = hoteles[Math.floor(Math.random()*hoteles.length)];
-      const finalRest = restaurantes[Math.floor(Math.random()*restaurantes.length)];
-      const finalTrans = transportes.filter(t=>!t.esVehiculoPropio)[0];
-      const finalActs = lugaresTuristicos.slice(0,2);
-      selectedItems.hotel = finalHotel.id;
-      selectedItems.restaurante = finalRest.id;
-      selectedItems.transporte = finalTrans.id;
-      selectedItems.turismo = finalActs.map(a=>a.id);
-      const planText = `🎲 RUTA SORPRESA 🎲\nHotel: ${finalHotel.nombre} (${finalHotel.direccion||''})\nRestaurante: ${finalRest.item}\nTransporte: ${finalTrans.empresa}\nActividades: ${finalActs.map(a=>a.item).join(', ')}`;
-      sendToSheets({type:'plan',userName:currentUser.name,planDetails:planText});
-      alert(`¡Sorpresa!\n${planText}\nDetalles enviados a tu correo/WhatsApp.`);
-      enviarPresupuesto(planText, 0, 'whatsapp');
-      modal.remove();
-    };
+    const tabs = municipios.map(m => `
+      <button onclick="renderConTabs('${panelName}',
+        panelName==='turismo'?lugaresTuristicos:panelName==='hoteles'?hoteles:panelName==='restaurantes'?restaurantes:transportes,
+        panelName==='turismo'?renderTurismoRow:panelName==='hoteles'?renderHotelRow:panelName==='restaurantes'?renderRestauranteRow:renderTransporteRow,
+        '${municipioField}','${m.nombre}')" style="
+        padding:0.5rem 1.1rem; border-radius:20px; border:2px solid ${m.nombre===municipioActivo ? 'var(--accent)' : 'var(--border)'};
+        cursor:pointer; font-family:var(--font); font-size:0.78rem; font-weight:700;
+        background:${m.nombre===municipioActivo ? 'var(--accent)' : '#fff'};
+        color:${m.nombre===municipioActivo ? '#fff' : 'var(--text-soft)'};
+        transition:all 0.2s; white-space:nowrap;
+      ">${m.emoji} ${m.nombre}</button>
+    `).join('');
+
+    const filtrados = items.filter(x => (x[municipioField]||'').includes(municipioActivo));
+    const count = filtrados.length;
+
+    const cards = filtrados.map(renderFn).join('');
+
+    panelList.innerHTML = `
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;padding-bottom:0.7rem;border-bottom:1px solid var(--border);">
+        ${tabs}
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-soft);margin-bottom:0.7rem;font-weight:600;">
+        ${count} opción${count!==1?'es':''} en ${municipioActivo}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:2.5rem;">
+        ${count > 0 ? cards : '<p style="color:var(--text-soft);font-size:0.85rem;grid-column:1/-1;">Sin opciones registradas en esta zona aún.</p>'}
+      </div>
+    `;
   }
 
-  function enviarPresupuesto(texto, total, metodo){
-    if(!currentUser) return;
-    const body = `Hola ${currentUser.name},\n\n${texto}\n\n🌿 Rojobore - Chiquitanía`;
-    if(metodo==='email') window.open(`mailto:${currentUser.email}?subject=Tu plan Rojobore&body=${encodeURIComponent(body)}`);
-    else window.open(`https://wa.me/${currentUser.phone.replace(/\D/g,'')}?text=${encodeURIComponent(body)}`);
-    showToast('Plan enviado ✅');
+  function renderTurismoConTabs(municipioActivo){
+    const panelList = document.getElementById('panelList');
+    const municipios = [
+      { nombre:'Roboré', emoji:'🏘️' },
+      { nombre:'Chochís', emoji:'⛪' },
+      { nombre:'Aguas Calientes', emoji:'♨️' }
+    ];
+
+    const tabs = municipios.map(m => `
+      <button onclick="renderTurismoConTabs('${m.nombre}')" style="
+        padding:0.5rem 1.1rem; border-radius:20px; border:2px solid ${m.nombre===municipioActivo ? 'var(--accent)' : 'var(--border)'};
+        cursor:pointer; font-family:var(--font); font-size:0.78rem; font-weight:700;
+        background:${m.nombre===municipioActivo ? 'var(--accent)' : '#fff'};
+        color:${m.nombre===municipioActivo ? '#fff' : 'var(--text-soft)'};
+        transition:all 0.2s; white-space:nowrap;
+      ">${m.emoji} ${m.nombre}</button>
+    `).join('');
+
+    const filtrados = lugaresTuristicos.filter(l => l.municipio === municipioActivo);
+    const count = filtrados.length;
+
+    const cards = filtrados.map(l => `
+      <div onclick="openDrawer(drawerTurismoHTML(lugaresTuristicos.find(x=>x.id===${l.id})),'${l.item.replace(/'/g,"\\'")}','📍 ${l.municipio} · ⭐ ${l.rating}','${l.imagen}')" style="
+        border-radius:14px; overflow:hidden; cursor:pointer;
+        box-shadow:0 3px 12px rgba(45,106,79,0.12);
+        border:1.5px solid var(--border); background:#fff;
+        transition:transform 0.2s, box-shadow 0.2s;
+      "
+      onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(45,106,79,0.22)'"
+      onmouseout="this.style.transform='';this.style.boxShadow='0 3px 12px rgba(45,106,79,0.12)'">
+        <div style="position:relative; width:100%; aspect-ratio:4/3; overflow:hidden;">
+          <img src="${l.imagen}" alt="${l.item}"
+            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;"
+            onerror="this.src='https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400'">
+          <div style="
+            position:absolute; inset:0;
+            background:linear-gradient(to top, rgba(10,30,20,0.96) 0%, rgba(10,30,20,0.35) 55%, transparent 100%);
+            display:flex; flex-direction:column; justify-content:flex-end; padding:0.7rem 0.8rem;
+          ">
+            <div style="color:#fff;font-weight:800;font-size:0.95rem;font-family:'Playfair Display',serif;
+              text-shadow:0 2px 8px rgba(0,0,0,1);line-height:1.2;margin-bottom:0.3rem;">${l.item}</div>
+            <div style="display:flex;gap:0.35rem;flex-wrap:wrap;">
+              <span style="background:rgba(46,213,115,0.3);color:#d4ffeb;border:1px solid rgba(46,213,115,0.5);
+                font-size:0.62rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:20px;">⭐ ${l.rating}</span>
+              <span style="background:rgba(255,255,255,0.18);color:#fff;
+                font-size:0.62rem;padding:0.15rem 0.45rem;border-radius:20px;border:1px solid rgba(255,255,255,0.3);">
+                Bs ${l.precioLocal}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0.6rem 0.8rem 0.65rem;background:#fff;border-top:1px solid #e8f4ee;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.75rem;color:#5a8a70;font-weight:500;">🥾 ${l.dificultad||'Fácil'} · 🕒 ${l.horario}</span>
+          <span style="font-size:0.72rem;color:#2D6A4F;font-weight:700;">Ver →</span>
+        </div>
+      </div>
+    `).join('');
+
+    panelList.innerHTML = `
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;padding-bottom:0.7rem;border-bottom:1px solid var(--border);">
+        ${tabs}
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-soft);margin-bottom:0.7rem;font-weight:600;">
+        ${count} lugar${count!==1?'es':''} en ${municipioActivo}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+        ${cards || '<p style="color:var(--text-soft);font-size:0.85rem;grid-column:1/-1;">Sin lugares registrados en esta zona aún.</p>'}
+      </div>
+    `;
   }
 
-  function openChoiceModalSafe(){
-    if(!currentUser){ showToast('Regístrate'); return; }
-    const modal = document.createElement('div'); modal.className='roulette-modal';
-    modal.innerHTML = `<div class="roulette-card"><h3>Planifica tu viaje</h3><button class="btn-roulette" onclick="showRoulette();this.closest('.roulette-modal').remove()">🎲 Ruta Sorpresa</button><button class="btn-roulette" style="margin-top:1rem; background:#FFD700;" onclick="location.reload();">📋 Plan Manual (próximamente)</button><button onclick="this.closest('.roulette-modal').remove()" style="margin-top:0.5rem; background:none; color:white;">Cerrar</button></div>`;
-    document.body.appendChild(modal);
-    window.showRoulette = showRoulette;
+  function scrollPanelDown(){
+    const panelList = document.getElementById('panelList');
+    const btn = document.getElementById('scrollDownBtn');
+    const nearBottom = panelList.scrollTop + panelList.clientHeight >= panelList.scrollHeight - 20;
+    if(nearBottom){
+      panelList.scrollTo({top: 0, behavior:'smooth'});
+      btn.textContent = '↓';
+    } else {
+      panelList.scrollBy({top: panelList.clientHeight - 60, behavior:'smooth'});
+    }
+  }
+
+  // Centro de referencia: Roboré
+  const ROBORE_LAT = -18.3328, ROBORE_LNG = -59.7583;
+
+  function calcularDistancia(lat1,lng1,lat2,lng2){const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lng2-lng1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+
+  function kmLabel(lat, lng){
+    const d = calcularDistancia(ROBORE_LAT, ROBORE_LNG, lat, lng);
+    return d < 2 ? 'En Roboré' : Math.round(d) + ' km de Roboré';
+  }
+
+  function initPanelMap(name, items){
+    if(!panelMap){
+      panelMap = L.map('panelMap', {zoomControl:true}).setView([-18.3328, -59.7583], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(panelMap);
+    }
+    panelMarkers.forEach(m=>{ try{ panelMap.removeLayer(m); }catch(e){} });
+    panelMarkers=[];
+    document.getElementById('distanceOverlay').innerHTML = '';
+
+    if(name === 'transporte'){
+      Object.entries(ciudadesBolivia).forEach(([k,c])=>{
+        const dist = Math.round(calcularDistancia(c.lat, c.lng, ROBORE_LAT, ROBORE_LNG));
+        const m = L.marker([c.lat,c.lng],{icon:L.divIcon({html:'<div style="background:#2D6A4F;width:11px;height:11px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.4);"></div>',iconSize:[11,11],iconAnchor:[5,5]})})
+          .addTo(panelMap).bindPopup(`<b>${c.nombre}</b><br>📏 ${dist} km a Roboré`);
+        panelMarkers.push(m);
+      });
+      Object.entries(destinos).forEach(([k,d])=>{
+        const m = L.marker([d.lat,d.lng],{icon:L.divIcon({html:'<div style="background:#52B788;width:15px;height:15px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.5);"></div>',iconSize:[15,15],iconAnchor:[7,7]})})
+          .addTo(panelMap).bindPopup(`<b>${d.nombre}</b>`);
+        panelMarkers.push(m);
+      });
+      Object.entries(ciudadesBolivia).forEach(([k,c])=>{
+        Object.entries(destinos).forEach(([dk,d])=>{
+          const dist = Math.round(calcularDistancia(c.lat,c.lng,d.lat,d.lng));
+          const line = L.polyline([[c.lat,c.lng],[d.lat,d.lng]],{color:'#52B788',weight:2,opacity:0.4,dashArray:'6,6'}).addTo(panelMap);
+          line.bindTooltip(`${Math.round(calcularDistancia(c.lat,c.lng,d.lat,d.lng))} km`, {permanent:false, direction:'center'});
+          panelMarkers.push(line);
+        });
+      });
+      panelMap.setView([-17.0,-65.0],5);
+
+    } else if(name === 'turismo'){
+      const validItems = items.filter(l=>l.lat);
+      validItems.forEach(l=>{
+        const dist = kmLabel(l.lat, l.lng);
+        const m = L.marker([l.lat,l.lng],{icon:L.divIcon({
+          html:`<div style="background:#2D6A4F;color:#fff;padding:3px 7px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.35);">${l.item.split(' ').slice(0,2).join(' ')}</div>`,
+          iconAnchor:[40,12]
+        })}).addTo(panelMap)
+          .bindPopup(`<b>${l.item}</b><br>📍 ${l.municipio}<br>📏 ${dist}<br>💰 Bs ${l.precioLocal}`);
+        panelMarkers.push(m);
+        // Línea desde Roboré
+        const line = L.polyline([[ROBORE_LAT, ROBORE_LNG],[l.lat,l.lng]],{color:'#74C69D',weight:1.5,opacity:0.5,dashArray:'4,6'}).addTo(panelMap);
+        line.bindTooltip(dist,{permanent:false,direction:'center'});
+        panelMarkers.push(line);
+      });
+      // Marker de Roboré
+      const rM = L.marker([ROBORE_LAT,ROBORE_LNG],{icon:L.divIcon({html:'<div style="background:#1B4332;color:#B7E4C7;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.4);">📍 Roboré</div>',iconAnchor:[35,12]})}).addTo(panelMap);
+      panelMarkers.push(rM);
+      if(validItems.length) panelMap.fitBounds([[ROBORE_LAT,ROBORE_LNG],...validItems.map(l=>[l.lat,l.lng])],{padding:[30,30]});
+      else panelMap.setView([-18.26,-59.92],11);
+
+    } else if(name === 'hoteles'){
+      // Hoteles sin coord exacta → los centramos en Roboré/Chochís según ubicacion
+      const ubicCoords = {
+        'Roboré': {lat:-18.3328,lng:-59.7583},
+        'Chochís': {lat:-18.15,lng:-60.03},
+      };
+      items.forEach((h,i)=>{
+        const ub = Object.entries(ubicCoords).find(([k])=>h.ubicacion&&h.ubicacion.includes(k));
+        if(!ub) return;
+        // pequeño offset para no solapar
+        const lat = ub[1].lat + (Math.random()-0.5)*0.018;
+        const lng = ub[1].lng + (Math.random()-0.5)*0.018;
+        const dist = kmLabel(lat, lng);
+        const m = L.marker([lat,lng],{icon:L.divIcon({
+          html:`<div style="background:#2D6A4F;color:#fff;padding:3px 7px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.35);">🏨 ${h.nombre.split(' ').slice(0,2).join(' ')}</div>`,
+          iconAnchor:[50,12]
+        })}).addTo(panelMap)
+          .bindPopup(`<b>${h.nombre}</b><br>📏 ${dist}<br>💰 Bs ${h.precioNoche}/noche`);
+        panelMarkers.push(m);
+        const line = L.polyline([[ROBORE_LAT,ROBORE_LNG],[lat,lng]],{color:'#74C69D',weight:1.5,opacity:0.45,dashArray:'4,6'}).addTo(panelMap);
+        line.bindTooltip(dist,{permanent:false,direction:'center'});
+        panelMarkers.push(line);
+      });
+      const rM = L.marker([ROBORE_LAT,ROBORE_LNG],{icon:L.divIcon({html:'<div style="background:#1B4332;color:#B7E4C7;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.4);">📍 Roboré</div>',iconAnchor:[35,12]})}).addTo(panelMap);
+      panelMarkers.push(rM);
+      panelMap.setView([-18.26,-59.92],11);
+
+    } else if(name === 'restaurantes'){
+      const ubicCoords2 = {
+        'Roboré': {lat:-18.3328,lng:-59.7583},
+        'Chochís': {lat:-18.15,lng:-60.03},
+      };
+      items.forEach(r=>{
+        const ub = Object.entries(ubicCoords2).find(([k])=>r.ubicacion&&r.ubicacion.includes(k));
+        if(!ub) return;
+        const lat = ub[1].lat + (Math.random()-0.5)*0.015;
+        const lng = ub[1].lng + (Math.random()-0.5)*0.015;
+        const dist = kmLabel(lat, lng);
+        const m = L.marker([lat,lng],{icon:L.divIcon({
+          html:`<div style="background:#2D6A4F;color:#fff;padding:3px 6px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.35);">🍽️ ${r.item.split(' ').slice(0,2).join(' ')}</div>`,
+          iconAnchor:[45,12]
+        })}).addTo(panelMap)
+          .bindPopup(`<b>${r.item}</b><br>📏 ${dist}<br>💰 Almuerzo Bs ${r.precioAlmuerzo||'?'}`);
+        panelMarkers.push(m);
+        const line = L.polyline([[ROBORE_LAT,ROBORE_LNG],[lat,lng]],{color:'#74C69D',weight:1.2,opacity:0.4,dashArray:'4,6'}).addTo(panelMap);
+        line.bindTooltip(dist,{permanent:false,direction:'center'});
+        panelMarkers.push(line);
+      });
+      const rM = L.marker([ROBORE_LAT,ROBORE_LNG],{icon:L.divIcon({html:'<div style="background:#1B4332;color:#B7E4C7;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.4);">📍 Roboré</div>',iconAnchor:[35,12]})}).addTo(panelMap);
+      panelMarkers.push(rM);
+      panelMap.setView([-18.26,-59.92],11);
+    }
+
+    setTimeout(()=>panelMap.invalidateSize(),200);
   }
 
   function initFullMap(){
     if(!fullMap){
-      fullMap = L.map('fullMapContainer').setView([-18.26,-59.92],10);
+      fullMap = L.map('fullMapContainer').setView([-18.26,-59.92],11);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(fullMap);
-      lugaresTuristicos.forEach(l=>{ if(l.lat) L.marker([l.lat,l.lng]).addTo(fullMap).bindPopup(l.item); });
+      lugaresTuristicos.forEach(l=>{
+        if(!l.lat)return;
+        L.marker([l.lat,l.lng],{icon:L.divIcon({html:'<div style="background:#2D6A4F;width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:8px;">🏖️</div>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(fullMap).bindPopup('<b>'+l.item+'</b><br>📍'+l.municipio+'<br>Bs '+l.precioLocal);
+      });
+      Object.entries(destinos).forEach(([k,d])=>{
+        L.marker([d.lat,d.lng],{icon:L.divIcon({html:'<div style="background:#52B788;color:#fff;padding:3px 6px;border-radius:8px;font-size:10px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.4);">'+d.nombre+'</div>',iconAnchor:[30,12]})}).addTo(fullMap);
+      });
+      Object.entries(ciudadesBolivia).forEach(([k,c])=>{
+        L.marker([c.lat,c.lng],{icon:L.divIcon({html:'<div style="background:#52796F;width:10px;height:10px;border-radius:50%;border:2px solid #fff;"></div>',iconSize:[10,10],iconAnchor:[5,5]})}).addTo(fullMap).bindPopup(c.nombre);
+        Object.entries(destinos).forEach(([dk,d])=>{
+          L.polyline([[c.lat,c.lng],[d.lat,d.lng]],{color:'#52B788',weight:2,opacity:0.3,dashArray:'6,8'}).addTo(fullMap);
+        });
+      });
     }
     setTimeout(()=>fullMap.invalidateSize(),200);
   }
 
-  // dibujar drawer y cerrar
-  document.body.insertAdjacentHTML('beforeend', `<div id="detailDrawer" class="detail-drawer"><div style="padding:1rem; border-bottom:1px solid var(--neon-green); display:flex; justify-content:space-between;"><h3>Detalles</h3><button onclick="closeDrawer()" style="background:none; color:white; font-size:1.2rem;">✕</button></div><div id="drawerBody" style="flex:1; overflow-y:auto; padding:1rem;"></div></div><div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>`);
+  // ===== DRAWER =====
+  function openDrawer(html, titulo, sub, imagen){
+    document.getElementById('drawerTitle').textContent = titulo;
+    document.getElementById('drawerSub').textContent = sub;
+    document.getElementById('drawerImg').style.backgroundImage = `url('${imagen}')`;
+    document.getElementById('drawerImgThumb').style.backgroundImage = `url('${imagen}')`;
+    document.getElementById('drawerBody').innerHTML = html;
+    document.getElementById('detailDrawer').style.transform = 'translateX(0)';
+    document.getElementById('drawerOverlay').style.display = 'block';
+  }
+  function closeDrawer(){
+    document.getElementById('detailDrawer').style.transform = 'translateX(100%)';
+    document.getElementById('drawerOverlay').style.display = 'none';
+  }
 
-  if(!currentUser) document.getElementById('regOverlay').style.display='flex';
-  else updateUserUI();
+  function drawerTurismoHTML(l){
+    const sel = selectedItems.turismo.includes(l.id);
+    return `
+      <div style="display:flex;flex-direction:column;gap:0.7rem;">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">⭐ ${l.rating}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">📍 ${l.municipio}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">🕒 ${l.horario}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">🥾 ${l.dificultad||''}</span>
+        </div>
+        <p style="font-size:0.9rem;color:#1B3A2D;line-height:1.6;">${l.descripcion}</p>
+        <div style="background:#F2FAF5;border-radius:12px;padding:0.8rem;display:flex;flex-direction:column;gap:0.5rem;">
+          <div style="font-size:0.8rem;font-weight:700;color:#2D6A4F;margin-bottom:2px;">📋 Información</div>
+          <div style="font-size:0.82rem;display:flex;gap:0.5rem;"><span>📏</span><span><strong>Distancia:</strong> ${l.distancia||'-'}</span></div>
+          <div style="font-size:0.82rem;display:flex;gap:0.5rem;"><span>🚗</span><span><strong>Cómo llegar:</strong> ${l.transporte||'-'}</span></div>
+          <div style="font-size:0.82rem;display:flex;gap:0.5rem;"><span>🎯</span><span><strong>Experiencia:</strong> ${l.experiencia||'-'}</span></div>
+          <div style="font-size:0.82rem;display:flex;gap:0.5rem;"><span>🏕️</span><span><strong>Servicios:</strong> ${l.servicios||'-'}</span></div>
+        </div>
+        ${l.recomendacion ? `<div style="background:#FFF8E7;border-radius:12px;padding:0.75rem;border-left:3px solid #F4A261;">
+          <div style="font-size:0.78rem;font-weight:700;color:#c07020;margin-bottom:3px;">💡 Recomendación</div>
+          <div style="font-size:0.82rem;color:#7a4a10;">${l.recomendacion}</div>
+        </div>` : ''}
+        <div style="background:#F2FAF5;border-radius:12px;padding:0.8rem;display:flex;flex-direction:column;gap:0.4rem;">
+          <div style="font-size:0.8rem;font-weight:700;color:#2D6A4F;margin-bottom:4px;">💰 Precios</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;"><span>Visitante local</span><strong>Bs ${l.precioLocal}</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;"><span>Extranjero</span><strong>Bs ${l.precioExtranjero}</strong></div>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
+          <button onclick="toggleTurismo(${l.id});document.getElementById('drawerBody').innerHTML=drawerTurismoHTML(lugaresTuristicos.find(x=>x.id===${l.id}))" 
+            style="flex:1;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:${sel?'#1B4332':'#2D6A4F'};color:#fff;transition:0.2s;">
+            ${sel?'✅ Agregado al plan':'＋ Agregar al plan'}
+          </button>
+          ${l.googleMaps ? `<a href="${l.googleMaps}" target="_blank"
+            style="flex:1;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:#4285F4;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:0.4rem;">
+            🗺️ Ver en Maps
+          </a>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function drawerHotelHTML(h){
+    const sel = selectedItems.hotel===h.id;
+    return `
+      <div style="display:flex;flex-direction:column;gap:0.7rem;">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">⭐ ${h.rating}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">📍 ${h.ubicacion}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${h.tipo}</span>
+        </div>
+        <p style="font-size:0.9rem;color:#1B3A2D;line-height:1.6;">${h.servicios}</p>
+        <div style="background:#F2FAF5;border-radius:12px;padding:0.8rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+          <div style="font-size:0.82rem;display:flex;align-items:center;gap:6px;"><span style="font-size:1rem;">🛜</span> WiFi: <strong>${h.wifi?'Sí':'No'}</strong></div>
+          <div style="font-size:0.82rem;display:flex;align-items:center;gap:6px;"><span style="font-size:1rem;">🍳</span> Desayuno: <strong>${h.desayuno?'Sí':'No'}</strong></div>
+          <div style="font-size:0.82rem;display:flex;align-items:center;gap:6px;"><span style="font-size:1rem;">🏊</span> Piscina: <strong>${h.piscina?'Sí':'No'}</strong></div>
+          <div style="font-size:0.82rem;display:flex;align-items:center;gap:6px;"><span style="font-size:1rem;">👥</span> Capacidad: <strong>${h.capacidad} pers.</strong></div>
+        </div>
+        <div style="background:#F2FAF5;border-radius:12px;padding:0.8rem;">
+          <div style="font-size:0.8rem;font-weight:700;color:#2D6A4F;margin-bottom:4px;">💰 Precio por noche</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#1B4332;">Bs ${h.precioNoche}</div>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
+          <button onclick="toggleHotel(${h.id});document.getElementById('drawerBody').innerHTML=drawerHotelHTML(hoteles.find(x=>x.id===${h.id}))"
+            style="flex:1;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:${sel?'#1B4332':'#2D6A4F'};color:#fff;">
+            ${sel?'✅ Elegido':'＋ Elegir hotel'}
+          </button>
+          <button onclick="reservarDirecto('${h.nombre}','${h.telefono}')"
+            style="flex:1;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:#25D366;color:#fff;">
+            💬 Reservar
+          </button>
+        </div>
+      </div>`;
+  }
+
+  function drawerRestHTML(r){
+    const sel = selectedItems.restaurante===r.id;
+    return `
+      <div style="display:flex;flex-direction:column;gap:0.7rem;">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">📍 ${r.ubicacion}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${r.tipo}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">🕒 ${r.horario}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">🛜 WiFi: ${r.wifi?'Sí':'No'}</span>
+        </div>
+        <p style="font-size:0.9rem;color:#1B3A2D;line-height:1.6;">${r.especialidad}</p>
+        ${r.recomendacion ? `<div style="background:#FFF8E7;border-radius:12px;padding:0.75rem;border-left:3px solid #F4A261;">
+          <div style="font-size:0.78rem;font-weight:700;color:#c07020;margin-bottom:3px;">💡 Recomendación</div>
+          <div style="font-size:0.82rem;color:#7a4a10;">${r.recomendacion}</div>
+        </div>` : ''}
+        <div style="background:#F2FAF5;border-radius:12px;padding:0.8rem;display:flex;flex-direction:column;gap:0.4rem;">
+          <div style="font-size:0.8rem;font-weight:700;color:#2D6A4F;margin-bottom:4px;">💰 Precios</div>
+          ${r.precioDesayuno>0 ? `<div style="display:flex;justify-content:space-between;font-size:0.82rem;"><span>🍳 Desayuno</span><strong>Bs ${r.precioDesayuno}</strong></div>` : ''}
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;"><span>🍽️ Almuerzo</span><strong>Bs ${r.precioAlmuerzo}</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;"><span>🌙 Cena</span><strong>Bs ${r.precioCena}</strong></div>
+        </div>
+        ${r.direccion ? `<div style="font-size:0.8rem;color:#5a8a70;">📌 ${r.direccion} · ${r.capacidad||''}</div>` : ''}
+        <div style="display:flex;gap:0.5rem;margin-top:0.3rem;flex-wrap:wrap;">
+          <button onclick="toggleRestaurante(${r.id});document.getElementById('drawerBody').innerHTML=drawerRestHTML(restaurantes.find(x=>x.id===${r.id}))"
+            style="flex:1;min-width:120px;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:${sel?'#1B4332':'#2D6A4F'};color:#fff;">
+            ${sel?'✅ Elegido':'＋ Elegir restaurante'}
+          </button>
+          ${r.googleMaps ? `<a href="${r.googleMaps}" target="_blank"
+            style="flex:1;min-width:100px;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:#4285F4;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:0.4rem;">
+            🗺️ Ver en Maps
+          </a>` : ''}
+          ${r.facebook ? `<a href="${r.facebook}" target="_blank"
+            style="padding:0.75rem 1rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:#1877F2;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;">
+            f
+          </a>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function drawerTransHTML(t){
+    const sel = selectedItems.transporte===t.id;
+    return `
+      <div style="display:flex;flex-direction:column;gap:0.7rem;">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">🚌 ${t.tipo}</span>
+          <span style="background:#EBF5EE;color:#2D6A4F;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">🕒 ${t.horario}</span>
+        </div>
+        <div style="background:#F2FAF5;border-radius:12px;padding:0.8rem;display:flex;flex-direction:column;gap:0.4rem;">
+          <div style="font-size:0.8rem;font-weight:700;color:#2D6A4F;margin-bottom:4px;">🗺️ Ruta</div>
+          <div style="font-size:0.9rem;color:#1B3A2D;">${t.ruta}</div>
+        </div>
+        <div style="background:#F2FAF5;border-radius:12px;padding:0.8rem;">
+          <div style="font-size:0.8rem;font-weight:700;color:#2D6A4F;margin-bottom:4px;">💰 Precio por persona (ida)</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#1B4332;">${t.esVehiculoPropio?'Según recorrido':'Bs '+t.precio}</div>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
+          <button onclick="toggleTransporte(${t.id});document.getElementById('drawerBody').innerHTML=drawerTransHTML(transportes.find(x=>x.id===${t.id}))"
+            style="flex:1;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:${sel?'#1B4332':'#2D6A4F'};color:#fff;">
+            ${sel?'✅ Elegido':'＋ Elegir transporte'}
+          </button>
+          ${!t.esVehiculoPropio?`<button onclick="reservarDirecto('${t.empresa}','${t.telefono}')"
+            style="flex:1;padding:0.75rem;border-radius:12px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);background:#25D366;color:#fff;">
+            💬 Reservar</button>`:''}
+        </div>
+      </div>`;
+  }
+
+  // ===== RENDER CARDS (solo imagen + título + botón detalle) =====
+  function getPriceClass(p){return p<=15?'price-low':p<=120?'price-mid':'price-high';}
+  function getPriceBadge(p){return p<=15?'price-low-b':p<=120?'price-mid-b':'price-high-b';}
+
+  function renderTurismoRow(l){
+    const sel = selectedItems.turismo.includes(l.id);
+    return `<div class="item-row ${sel?'selected':''}" id="row-${l.id}" onclick="openDrawer(drawerTurismoHTML(lugaresTuristicos.find(x=>x.id===${l.id})),'${l.item.replace(/'/g,"\\'")}','📍 ${l.municipio} · ⭐ ${l.rating}','${l.imagen}')" style="cursor:pointer;border-radius:16px;overflow:hidden;border:1.5px solid #d0e8d8;background:#fff;box-shadow:0 4px 16px rgba(45,106,79,0.13);">
+      <div style="width:100%;height:200px;overflow:hidden;position:relative;">
+        <img src="${l.imagen}" alt="${l.item}" loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"
+          onerror="this.src='https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,30,20,0.93) 0%,rgba(10,30,20,0.3) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:0.8rem;">
+          <div style="color:#fff;font-family:'Playfair Display',serif;font-weight:800;font-size:1.1rem;text-shadow:0 2px 8px rgba(0,0,0,1);line-height:1.2;margin-bottom:0.3rem;">${l.item}</div>
+          <span style="background:rgba(46,213,115,0.35);color:#d4ffeb;border:1px solid rgba(46,213,115,0.6);font-size:0.65rem;font-weight:700;padding:0.18rem 0.5rem;border-radius:20px;display:inline-block;">⭐ ${l.rating} · Bs ${l.precioLocal}</span>
+        </div>
+      </div>
+      <div style="padding:0.7rem 0.9rem 0.8rem;background:#fff;border-top:1px solid #e8f4ee;">
+        <div style="font-size:0.78rem;color:#5a8a70;font-weight:600;">📍 ${l.municipio} &nbsp;·&nbsp; 🥾 ${l.dificultad||'Fácil'}</div>
+        <div style="font-size:0.72rem;color:#aaa;margin-top:0.2rem;">🕒 ${l.horario}</div>
+      </div>
+    </div>`;
+  }
+
+  function renderHotelRow(h){
+    const sel = selectedItems.hotel===h.id;
+    return `<div class="item-row ${sel?'selected':''}" id="row-${h.id}" onclick="openDrawer(drawerHotelHTML(hoteles.find(x=>x.id===${h.id})),'${h.nombre.replace(/'/g,"\\'")}','📍 ${h.ubicacion} · ⭐ ${h.rating}','${h.imagen}')" style="cursor:pointer;border-radius:12px;overflow:hidden;border:1.5px solid #d0e8d8;background:#fff;box-shadow:0 2px 8px rgba(45,106,79,0.1);">
+      <div style="width:100%;height:200px;overflow:hidden;position:relative;">
+        <img src="${h.imagen}" alt="${h.nombre}" loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"
+          onerror="this.src='https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,30,20,0.92) 0%,rgba(10,30,20,0.3) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:0.7rem 0.8rem;">
+          <div style="color:#fff;font-family:'Playfair Display',serif;font-weight:800;font-size:1.25rem;text-shadow:0 2px 8px rgba(0,0,0,1);line-height:1.2;margin-bottom:0.3rem;">${h.nombre}</div>
+          <span style="background:rgba(46,213,115,0.3);color:#d4ffeb;border:1px solid rgba(46,213,115,0.5);font-size:0.63rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:20px;display:inline-block;">Bs ${h.precioNoche}/n</span>
+        </div>
+      </div>
+      <div style="padding:0.6rem 0.8rem 0.65rem;background:#fff;border-top:1px solid #e8f4ee;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.75rem;color:#5a8a70;font-weight:500;">📍 ${h.ubicacion} · ⭐ ${h.rating}</span>
+        <span style="font-size:0.72rem;color:#2D6A4F;font-weight:700;">Ver →</span>
+      </div>
+    </div>`;
+  }
+
+  function renderRestauranteRow(r){
+    const sel = selectedItems.restaurante===r.id;
+    return `<div class="item-row ${sel?'selected':''}" id="row-${r.id}" onclick="openDrawer(drawerRestHTML(restaurantes.find(x=>x.id===${r.id})),'${r.item.replace(/'/g,"\\'")}','📍 ${r.ubicacion} · ${r.tipo}','${r.imagen}')" style="cursor:pointer;border-radius:12px;overflow:hidden;border:1.5px solid #d0e8d8;background:#fff;box-shadow:0 2px 8px rgba(45,106,79,0.1);">
+      <div style="width:100%;height:200px;overflow:hidden;position:relative;">
+        <img src="${r.imagen}" alt="${r.item}" loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"
+          onerror="this.src='https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,30,20,0.92) 0%,rgba(10,30,20,0.3) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:0.7rem 0.8rem;">
+          <div style="color:#fff;font-family:'Playfair Display',serif;font-weight:800;font-size:1.1rem;text-shadow:0 2px 8px rgba(0,0,0,1);line-height:1.2;margin-bottom:0.3rem;">${r.item}</div>
+          <span style="background:rgba(46,213,115,0.3);color:#d4ffeb;border:1px solid rgba(46,213,115,0.5);font-size:0.63rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:20px;display:inline-block;">🍽️ Bs ${r.precioAlmuerzo} · ${r.tipo}</span>
+        </div>
+      </div>
+      <div style="padding:0.6rem 0.8rem 0.65rem;background:#fff;border-top:1px solid #e8f4ee;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.75rem;color:#5a8a70;font-weight:500;">📍 ${r.ubicacion} · 🕒 ${r.horario}</span>
+        <span style="font-size:0.72rem;color:#2D6A4F;font-weight:700;">Ver →</span>
+      </div>
+    </div>`;
+  }
+
+  function renderTransporteRow(t){
+    const sel = selectedItems.transporte===t.id;
+    return `<div class="item-row ${sel?'selected':''}" id="row-${t.id}" onclick="openDrawer(drawerTransHTML(transportes.find(x=>x.id===${t.id})),'${t.empresa.replace(/'/g,"\\'")}','🚌 ${t.tipo} · ${t.ruta}','${t.imagen}')" style="cursor:pointer;border-radius:12px;overflow:hidden;border:1.5px solid #d0e8d8;background:#fff;box-shadow:0 2px 8px rgba(45,106,79,0.1);">
+      <div style="width:100%;height:200px;overflow:hidden;position:relative;">
+        <img src="${t.imagen}" alt="${t.empresa}" loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"
+          onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,30,20,0.92) 0%,rgba(10,30,20,0.3) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:0.7rem 0.8rem;">
+          <div style="color:#fff;font-family:'Playfair Display',serif;font-weight:800;font-size:1.25rem;text-shadow:0 2px 8px rgba(0,0,0,1);line-height:1.2;margin-bottom:0.3rem;">${t.empresa}</div>
+          <span style="background:rgba(46,213,115,0.3);color:#d4ffeb;border:1px solid rgba(46,213,115,0.5);font-size:0.63rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:20px;display:inline-block;">${t.esVehiculoPropio?'Auto propio':'Bs '+t.precio+' ida'}</span>
+        </div>
+      </div>
+      <div style="padding:0.6rem 0.8rem 0.65rem;background:#fff;border-top:1px solid #e8f4ee;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.75rem;color:#5a8a70;font-weight:500;">🚌 ${t.tipo} · ${t.ruta}</span>
+        <span style="font-size:0.72rem;color:#2D6A4F;font-weight:700;">Ver →</span>
+      </div>
+    </div>`;
+  }
+
+  // ===== LÓGICA ORIGINAL (sin cambios) =====
+  function createClouds() {
+    const container = document.getElementById('cloudsContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    for (let i = 0; i < 12; i++) {
+      const cloud = document.createElement('div');
+      cloud.className = 'cloud';
+      const size = Math.random() * 180 + 120;
+      cloud.style.width = size + 'px';
+      cloud.style.height = size * 0.6 + 'px';
+      cloud.style.top = Math.random() * 80 + '%';
+      cloud.style.left = -(Math.random() * 400 + 150) + 'px';
+      cloud.style.animationDuration = Math.random() * 30 + 40 + 's';
+      cloud.style.animationDelay = Math.random() * 35 + 's';
+      cloud.style.opacity = Math.random() * 0.25 + 0.08;
+      container.appendChild(cloud);
+    }
+  }
+
+  function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._timeout);t._timeout=setTimeout(()=>t.style.display='none',2000);}
+  function reservarDirecto(n,t){if(!t||t==='N/A'){showToast('Teléfono no disponible');return;}window.open(`https://wa.me/${t.replace(/[^0-9+]/g,'')}?text=${encodeURIComponent('Hola! Vi *'+n+'* en Rojobore 🌿')}`,'_blank');}
+  async function sendToSheets(d){try{await fetch(GOOGLE_SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){}}
+  function contactSupport(){if(!currentUser){showToast('Regístrate primero');return;}window.open('https://wa.me/59171607412?text=Hola Rojobore 🌿','_blank');}
+
+  window.registerUser = function(){
+    const n=document.getElementById('regName').value.trim(),e=document.getElementById('regEmail').value.trim(),p=document.getElementById('regPhone').value.trim();
+    if(!n||!e||!p)return showToast('Completa todos los campos');
+    currentUser={name:n,email:e,phone:p};
+    localStorage.setItem('rojobore_user',JSON.stringify(currentUser));
+    sendToSheets({type:'new_user',userName:n,userEmail:e,userPhone:p});
+    document.getElementById('regOverlay').classList.add('hidden');
+    updateUserUI();
+    showToast(`✅ ¡Bienvenido ${n}!`);
+  };
+  function logout(){currentUser=null;localStorage.removeItem('rojobore_user');updateUserUI();showToast('Sesión cerrada');showSection('hero');}
+  function updateUserUI(){
+    const bar=document.getElementById('userBar');
+    const su=document.getElementById('sidebarUser');
+    if(currentUser){
+      bar.style.display='flex';
+      document.getElementById('userName').textContent=currentUser.name.split(' ')[0];
+      su.style.display='flex';
+      document.getElementById('sidebarUserName').textContent=currentUser.name.split(' ')[0];
+      document.getElementById('regOverlay').classList.add('hidden');
+    }else{
+      bar.style.display='none';
+      su.style.display='none';
+      document.getElementById('regOverlay').classList.remove('hidden');
+    }
+  }
+
+  function enviarPresupuesto(planText,total,metodo){
+    if(!currentUser){showToast('Regístrate primero');return;}
+    sendToSheets({type:'plan',userName:currentUser.name,userEmail:currentUser.email,planDetails:planText,total,metodoEnvio:metodo});
+    const body=`Hola ${currentUser.name},\n\n${planText}\n\n¡Disfruta tu viaje!\nEquipo Rojobore 🌿`;
+    if(metodo==='email'){window.open(`mailto:${currentUser.email}?subject=Plan Rojobore&body=${encodeURIComponent(body)}`);showToast('📧 Enviado a tu correo');}
+    else{let num=(currentUser.phone||'').replace(/\D/g,'');if(num.length>=8){window.open(`https://wa.me/${num}?text=${encodeURIComponent(body)}`);showToast('💬 Enviado a WhatsApp');}else showToast('Número inválido');}
+  }
+
+  function renderTurismo(){document.getElementById('turismoGrid').innerHTML=lugaresTuristicos.map(l=>`<div class="card ${selectedItems.turismo.includes(l.id)?'selected':''}" onclick="toggleTurismo(${l.id})"><div class="card-img" style="background-image:url('${l.imagen}');"></div><div class="card-body"><h4>${l.item}</h4><div class="meta">📍${l.municipio} · ⭐${l.rating} · 🕒${l.horario}</div><div class="meta">${l.descripcion}</div><div class="price ${getPriceClass(l.precioLocal)}">Bs ${l.precioLocal} <small>(local)</small></div><div class="card-actions"><button class="btn-sm btn-select" onclick="event.stopPropagation();toggleTurismo(${l.id})">${selectedItems.turismo.includes(l.id)?'✅':'＋'}</button><button class="btn-sm btn-reserve" onclick="event.stopPropagation();reservarDirecto('${l.item}','${l.telefono}')">💬 Reservar</button></div></div></div>`).join('');}
+  function renderHoteles(){document.getElementById('hotelesGrid').innerHTML=hoteles.map(h=>`<div class="card ${selectedItems.hotel===h.id?'selected':''}" onclick="toggleHotel(${h.id})"><div class="card-img" style="background-image:url('${h.imagen}');"></div><div class="card-body"><h4>${h.nombre}</h4><div class="meta">📍${h.ubicacion} · ⭐${h.rating} · ${h.tipo}</div><div class="meta">🛜WiFi:${h.wifi?'Sí':'No'} · 🍳Desayuno:${h.desayuno?'Sí':'No'} · 🏊Piscina:${h.piscina?'Sí':'No'}</div><div class="meta">${h.servicios}</div><div class="price ${getPriceClass(h.precioNoche)}">Bs ${h.precioNoche}/noche</div><div class="card-actions"><button class="btn-sm btn-select" onclick="event.stopPropagation();toggleHotel(${h.id})">${selectedItems.hotel===h.id?'✅':'＋'}</button><button class="btn-sm btn-reserve" onclick="event.stopPropagation();reservarDirecto('${h.nombre}','${h.telefono}')">💬 Reservar</button></div></div></div>`).join('');}
+  function renderRestaurantes(){document.getElementById('restaurantesGrid').innerHTML=restaurantes.map(r=>`<div class="card ${selectedItems.restaurante===r.id?'selected':''}" onclick="toggleRestaurante(${r.id})"><div class="card-img" style="background-image:url('${r.imagen}');"></div><div class="card-body"><h4>${r.item}</h4><div class="meta">📍${r.ubicacion} · ${r.tipo} · 🕒${r.horario}</div><div class="meta">${r.especialidad} · WiFi:${r.wifi?'Sí':'No'}</div><div class="meta">🍳Bs${r.precioDesayuno} · 🍽Bs${r.precioAlmuerzo} · 🌙Bs${r.precioCena}</div><div class="price">Almuerzo Bs ${r.precioAlmuerzo||'N/A'}</div><div class="card-actions"><button class="btn-sm btn-select" onclick="event.stopPropagation();toggleRestaurante(${r.id})">${selectedItems.restaurante===r.id?'✅':'＋'}</button><button class="btn-sm btn-reserve" onclick="event.stopPropagation();reservarDirecto('${r.item}','${r.telefono}')">💬 Reservar</button></div></div></div>`).join('');}
+  function renderTransporte(){document.getElementById('transporteGrid').innerHTML=transportes.map(t=>`<div class="card ${selectedItems.transporte===t.id?'selected':''}" onclick="toggleTransporte(${t.id})"><div class="card-img" style="background-image:url('${t.imagen}');"></div><div class="card-body"><h4>${t.empresa}</h4><div class="meta">📍${t.ruta} · 🕒${t.horario} · ${t.tipo}</div><div class="price ${t.esVehiculoPropio?'price-low':'price-mid'}">${t.esVehiculoPropio?'🚗 Auto propio':'Bs '+t.precio+' (ida)'}</div><div class="card-actions"><button class="btn-sm btn-select" onclick="event.stopPropagation();toggleTransporte(${t.id})">${selectedItems.transporte===t.id?'✅':'＋'}</button>${!t.esVehiculoPropio?`<button class="btn-sm btn-reserve" onclick="event.stopPropagation();reservarDirecto('${t.empresa}','${t.telefono}')">💬 Reservar</button>`:''}</div></div></div>`).join('');}
+
+  function toggleTurismo(id){
+    const i=selectedItems.turismo.indexOf(id);
+    i>=0?selectedItems.turismo.splice(i,1):selectedItems.turismo.length<5?selectedItems.turismo.push(id):showToast('Máximo 5 lugares');
+    updateAllUI();
+    if(currentSection==='turismo'){
+      const el=document.getElementById('row-'+id);
+      if(el) el.outerHTML=renderTurismoRow(lugaresTuristicos.find(l=>l.id===id));
+    }
+  }
+  function toggleHotel(id){
+    selectedItems.hotel=selectedItems.hotel===id?null:id;
+    updateAllUI();
+    if(currentSection==='hoteles'){const el=document.getElementById('row-'+id);if(el)el.outerHTML=renderHotelRow(hoteles.find(h=>h.id===id));}
+  }
+  function toggleRestaurante(id){
+    selectedItems.restaurante=selectedItems.restaurante===id?null:id;
+    updateAllUI();
+    if(currentSection==='restaurantes'){const el=document.getElementById('row-'+id);if(el)el.outerHTML=renderRestauranteRow(restaurantes.find(r=>r.id===id));}
+  }
+  function toggleTransporte(id){
+    selectedItems.transporte=selectedItems.transporte===id?null:id;
+    updateAllUI();
+    if(currentSection==='transporte'){const el=document.getElementById('row-'+id);if(el)el.outerHTML=renderTransporteRow(transportes.find(t=>t.id===id));}
+  }
+  function updateAllUI(){renderTurismo();renderHoteles();renderRestaurantes();renderTransporte();}
+
+  function openExplore(){if(!currentUser){showToast('Regístrate primero');return;}document.getElementById('exploreModal').classList.remove('hidden');updateAllUI();}
+  function openChoiceModal(){if(!currentUser){showToast('Regístrate primero');return;}document.getElementById('choiceModal').classList.remove('hidden');}
+  function openChoiceModalSafe(){if(!currentUser){showToast('Regístrate primero');document.getElementById('regOverlay').classList.remove('hidden');return;}document.getElementById('choiceModal').classList.remove('hidden');}
+  function closeChoiceModal(){document.getElementById('choiceModal').classList.add('hidden');}
+  function closeModals(){['planModal','calcModal','choiceModal'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
+
+  function openPlanModal(){closeModals();document.getElementById('planModal').classList.remove('hidden');document.getElementById('planResult').innerHTML='';document.getElementById('planRouteInfo').textContent='Selecciona origen y destino';}
+  function openCalcModal(){
+    closeModals();document.getElementById('calcModal').classList.remove('hidden');
+    document.getElementById('calcTransport').innerHTML='<option value="0">-- Transporte --</option>'+transportes.map(t=>`<option value="${t.id}" ${selectedItems.transporte===t.id?'selected':''}>${t.empresa} ${t.esVehiculoPropio?'🚗':'Bs'+t.precio}</option>`).join('');
+    document.getElementById('calcHotel').innerHTML='<option value="0">-- Hotel --</option>'+hoteles.map(h=>`<option value="${h.id}" ${selectedItems.hotel===h.id?'selected':''}>${h.nombre} - Bs${h.precioNoche}/noche</option>`).join('');
+    document.getElementById('calcRestaurante').innerHTML='<option value="0">-- Restaurante --</option>'+restaurantes.map(r=>`<option value="${r.id}" ${selectedItems.restaurante===r.id?'selected':''}>${r.item} - Almuerzo Bs${r.precioAlmuerzo||'N/A'}</option>`).join('');
+    document.getElementById('actividadesCheckboxes').innerHTML=lugaresTuristicos.map(l=>`<label class="actividad-chip"><input type="checkbox" value="${l.id}" ${selectedItems.turismo.includes(l.id)?'checked':''} onchange="syncActividades()">${l.item} (Bs${l.precioLocal})</label>`).join('');
+    document.getElementById('calcResult').innerHTML='';onTransportChange();
+  }
+  function syncActividades(){const checks=document.querySelectorAll('#actividadesCheckboxes input:checked');selectedItems.turismo=Array.from(checks).map(c=>parseInt(c.value)).slice(0,5);}
+  function onTransportChange(){document.getElementById('calcMapWrapper').style.display=document.getElementById('calcTransport').value=='46'?'block':'none';if(!calcMap)initCalcMap();if(calcMap)setTimeout(()=>calcMap.invalidateSize(),200);}
+  function initCalcMap(){calcMap=L.map('calcMapContainer').setView([-17.0,-65.0],5);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(calcMap);Object.entries(ciudadesBolivia).forEach(([k,c])=>{L.marker([c.lat,c.lng]).addTo(calcMap).bindPopup(c.nombre);});Object.entries(destinos).forEach(([k,d])=>{L.marker([d.lat,d.lng],{icon:L.divIcon({html:'<div style="background:#2D6A4F;width:20px;height:20px;border-radius:50%;border:3px solid #fff;"></div>'})}).addTo(calcMap).bindPopup(d.nombre);});}
+
+  function getUserLocation(){
+    if(!navigator.geolocation){showToast('Geolocalización no soportada');return;}
+    navigator.geolocation.getCurrentPosition(pos=>{
+      document.getElementById('calcOriginSelect').innerHTML=`<option value="custom" data-lat="${pos.coords.latitude}" data-lng="${pos.coords.longitude}">📍 Mi ubicación</option>`;
+      showToast('Ubicación detectada');calcularCalcRoute();
+    },()=>showToast('Permiso denegado'));
+  }
+  function calcularCalcRoute(){
+    const oSel=document.getElementById('calcOriginSelect');let co;
+    if(oSel.value==='custom'){const lat=parseFloat(oSel.options[0].getAttribute('data-lat')),lng=parseFloat(oSel.options[0].getAttribute('data-lng'));if(!lat)return;co={lat,lng,nombre:'Ubicación actual'};}
+    else co=ciudadesBolivia[oSel.value];
+    const cd=destinos[document.getElementById('calcDestSelect').value];if(!co||!cd)return;
+    if(calcRouteLine)calcMap.removeLayer(calcRouteLine);
+    calcRouteLine=L.polyline([[co.lat,co.lng],[cd.lat,cd.lng]],{color:'#52B788',weight:4}).addTo(calcMap);
+    calcMap.fitBounds([[co.lat,co.lng],[cd.lat,cd.lng]],{padding:[30,30]});
+    calcRutaDist=calcularDistancia(co.lat,co.lng,cd.lat,cd.lng);calcRutaTarifa=calcRutaDist*TARIFA_POR_KM;
+    document.getElementById('calcRouteInfo').textContent=`📏 ${Math.round(calcRutaDist)}km · 💰 Bs${Math.round(calcRutaTarifa)} ida`;
+  }
+  function calcularPlanRoute(){
+    const co=ciudadesBolivia[document.getElementById('planOrigin').value],cd=destinos[document.getElementById('planDest').value];
+    if(!co||!cd)return;planRutaDist=calcularDistancia(co.lat,co.lng,cd.lat,cd.lng);planRutaTarifa=planRutaDist*TARIFA_POR_KM;
+    document.getElementById('planRouteInfo').textContent=`📏 ${Math.round(planRutaDist)}km · 💰 Bs${Math.round(planRutaTarifa)} ida`;
+  }
+
+  function generateReviewSection(planId){return `
+    <div class="review-box" id="review-${planId}">
+      <div style="font-weight:600;font-size:0.7rem;">⭐ Deja tu reseña</div>
+      <div class="stars" id="stars-${planId}">
+        <span onclick="setRating('${planId}',1)">☆</span><span onclick="setRating('${planId}',2)">☆</span><span onclick="setRating('${planId}',3)">☆</span><span onclick="setRating('${planId}',4)">☆</span><span onclick="setRating('${planId}',5)">☆</span>
+      </div>
+      <textarea id="comment-${planId}" placeholder="Comentario..." style="width:100%;margin-top:0.3rem;padding:0.3rem;border-radius:6px;border:1px solid var(--border);font-family:var(--font);"></textarea>
+      <button onclick="submitReview('${planId}')" style="background:var(--accent);color:#fff;border:none;padding:0.3rem 0.8rem;border-radius:8px;margin-top:0.3rem;cursor:pointer;font-family:var(--font);">Enviar reseña</button>
+    </div>`;}
+  function setRating(planId,val){
+    const stars=document.getElementById('stars-'+planId).children;
+    for(let i=0;i<stars.length;i++){stars[i].textContent=i<val?'★':'☆';stars[i].classList.toggle('active',i<val);}
+    stars[0].parentElement.setAttribute('data-rating',val);
+  }
+  function submitReview(planId){
+    const rating=document.getElementById('stars-'+planId).getAttribute('data-rating')||0;
+    const comment=document.getElementById('comment-'+planId).value;
+    if(!rating){showToast('Selecciona una puntuación');return;}
+    sendToSheets({type:'review',planId,rating,comment,user:currentUser?.name||'Anónimo'});
+    showToast('✅ Reseña enviada');
+    document.getElementById('review-'+planId).innerHTML='<p style="color:var(--accent);">¡Gracias por tu reseña!</p>';
+  }
+
+  function calculateWithSelections(){
+    const p=parseInt(document.getElementById('calcPeople').value||2),d=parseInt(document.getElementById('calcDays').value||2);
+    const t=transportes.find(x=>x.id===parseInt(document.getElementById('calcTransport').value));
+    const h=hoteles.find(x=>x.id===parseInt(document.getElementById('calcHotel').value));
+    const r=restaurantes.find(x=>x.id===parseInt(document.getElementById('calcRestaurante').value));
+    const acts=selectedItems.turismo.map(id=>lugaresTuristicos.find(l=>l.id===id)).filter(Boolean);
+    if(!t||!h||!r)return showToast('Completa todos los campos');
+    const noches=Math.max(0,d-1);
+    let ct=t.esVehiculoPropio?(calcRutaDist?Math.round(calcRutaTarifa*2):0):t.precio*p*2;
+    const ch=h.precioNoche*noches;
+    const cr=((r.precioAlmuerzo||0)+(r.precioCena||0))*p*d;
+    const ca=acts.reduce((s,a)=>s+a.precioLocal*p,0);
+    const total=ct+ch+cr+ca;
+    const planId='manual_'+Date.now();
+    const planText=`📋 PRESUPUESTO MANUAL DETALLADO\n👥 ${p} personas · 📅 ${d} días\n\n🚌 TRANSPORTE: ${t.empresa}\n   Ida y vuelta × ${p} pers: Bs ${ct}\n\n🏨 ALOJAMIENTO: ${h.nombre}\n   ${noches} noche(s): Bs ${ch}\n\n🍽️ ALIMENTACIÓN: ${r.item}\n   Almuerzo + Cena × ${p} pers × ${d} días: Bs ${cr}\n\n🎟️ ACTIVIDADES (${acts.length}):\n${acts.map(a=>'   • '+a.item+' (Bs'+a.precioLocal+' c/u)').join('\n')}\n   Total actividades: Bs ${ca}\n\n💰 TOTAL: Bs ${total}`;
+    document.getElementById('calcResult').innerHTML=`
+      <div class="result-box"><strong>📊 Desglose completo</strong> · 👥${p} pers · 📅${d} días (${noches}n)<hr style="margin:0.3rem 0;border-color:var(--border);">
+      <div>🚌 <strong>Transporte:</strong> ${t.empresa} · Ida y vuelta × ${p} pers · <strong>Bs ${ct}</strong></div>
+      <div>🏨 <strong>Alojamiento:</strong> ${h.nombre} · ${noches} noche(s) · <strong>Bs ${ch}</strong></div>
+      <div>🍽️ <strong>Alimentación:</strong> ${r.item} · Almuerzo + Cena × ${p} pers × ${d} días · <strong>Bs ${cr}</strong></div>
+      <div>🎟️ <strong>Actividades (${acts.length}):</strong><br>${acts.map(a=>`&nbsp;&nbsp;• ${a.item} (Bs${a.precioLocal} c/u)`).join('<br>')||'Ninguna'}<br>Total actividades: <strong>Bs ${ca}</strong></div></div>
+      <div class="result-total"><div class="big">💰 Bs ${total}</div></div>
+      <button class="btn-send email" onclick="enviarPresupuesto(\`${planText.replace(/`/g,'\\`')}\`,${total},'email')">📧 Enviar por Correo</button>
+      <button class="btn-send whatsapp" onclick="enviarPresupuesto(\`${planText.replace(/`/g,'\\`')}\`,${total},'whatsapp')">💬 Enviar por WhatsApp</button>
+      ${generateReviewSection(planId)}`;
+    setRating(planId,0);
+  }
+
+  function generateQuickPlan(){
+    const pres=parseFloat(document.getElementById('planBudget').value),per=parseInt(document.getElementById('planPeople').value),d=parseInt(document.getElementById('planDays').value);
+    if(pres<1000)return showToast('Presupuesto mínimo Bs 1,000');
+    const noches=Math.max(0,d-1);
+    const bus=transportes.filter(x=>!x.esVehiculoPropio).sort((a,b)=>a.precio-b.precio)[0];
+    let t,ct;
+    if(planRutaDist&&Math.round(planRutaTarifa*2)<bus.precio*per*2){t=transportes.find(x=>x.id===46);ct=Math.round(planRutaTarifa*2);}
+    else{t=bus;ct=bus.precio*per*2;}
+    let h=hoteles.sort((a,b)=>a.precioNoche-b.precioNoche)[0],ch=noches?h.precioNoche*noches:0;
+    let r=restaurantes.filter(x=>x.precioAlmuerzo>0).sort((a,b)=>a.precioAlmuerzo-b.precioAlmuerzo)[0],cr=((r.precioAlmuerzo||0)+(r.precioCena||0))*per*d;
+    let acts=lugaresTuristicos.sort((a,b)=>a.precioLocal-b.precioLocal).slice(0,Math.min(d*2,5)),ca=acts.reduce((s,a)=>s+a.precioLocal*per,0);
+    let usado=ct+ch+cr+ca,sobrante=pres-usado,mejora='';
+    if(usado>pres){
+      while(acts.length>1&&(ct+ch+cr+acts.reduce((s,a)=>s+a.precioLocal*per,0))>pres)acts.pop();
+      ca=acts.reduce((s,a)=>s+a.precioLocal*per,0);usado=ct+ch+cr+ca;
+      if(usado>pres)return showToast('⚠️ Presupuesto insuficiente');
+    }else{
+      for(let hm of hoteles.sort((a,b)=>a.precioNoche-b.precioNoche)){if(noches===0)break;let nc=hm.precioNoche*noches;if(nc<=ch+sobrante&&hm.precioNoche>h.precioNoche){sobrante-=nc-ch;ch=nc;h=hm;break;}}
+      for(let extra of lugaresTuristicos.filter(l=>!acts.find(a=>a.id===l.id)).sort((a,b)=>a.precioLocal-b.precioLocal)){let ce=extra.precioLocal*per;if(ce<=sobrante&&acts.length<5){acts.push(extra);ca+=ce;sobrante-=ce;}}
+      for(let rm of restaurantes.filter(x=>x.precioAlmuerzo>0).sort((a,b)=>a.precioAlmuerzo-b.precioAlmuerzo)){let nc=((rm.precioAlmuerzo||0)+(rm.precioCena||0))*per*d;if(nc<=cr+sobrante&&rm.precioAlmuerzo>r.precioAlmuerzo){sobrante-=nc-cr;cr=nc;r=rm;break;}}
+      usado=pres-sobrante;
+      if(sobrante>0)mejora=`💡 Te sobran Bs${Math.round(sobrante)}. Podrías usarlos en souvenirs, una cena especial o guardarlos para tu próximo viaje.`;
+    }
+    const planId='auto_'+Date.now();
+    const planText=`🤖 PLAN AUTOMÁTICO (Presupuesto Bs ${pres})\n👥 ${per} personas · 📅 ${d} días\n\n🚌 TRANSPORTE: ${t.empresa}\n   Ida y vuelta × ${per} pers: Bs ${ct}\n\n🏨 ALOJAMIENTO: ${h.nombre}\n   ${noches} noche(s): Bs ${ch}\n\n🍽️ ALIMENTACIÓN: ${r.item}\n   Almuerzo + Cena × ${per} pers × ${d} días: Bs ${cr}\n\n🎟️ ACTIVIDADES (${acts.length}):\n${acts.map(a=>'   • '+a.item+' (Bs'+a.precioLocal+' c/u)').join('\n')}\n   Total actividades: Bs ${ca}\n\n💰 PRESUPUESTO ASIGNADO: Bs ${pres}${mejora?'\n'+mejora:''}`;
+    document.getElementById('planResult').innerHTML=`
+      <div class="result-box"><strong>✨ Plan generado para Bs ${pres}</strong> · 👥${per} pers · 📅${d} días (${noches}n)<hr style="margin:0.3rem 0;border-color:var(--border);">
+      <div>🚌 <strong>Transporte:</strong> ${t.empresa} · Ida y vuelta × ${per} pers · <strong>Bs ${ct}</strong></div>
+      <div>🏨 <strong>Alojamiento:</strong> ${h.nombre} · ${noches} noche(s) · <strong>Bs ${ch}</strong></div>
+      <div>🍽️ <strong>Alimentación:</strong> ${r.item} · Almuerzo + Cena × ${per} pers × ${d} días · <strong>Bs ${cr}</strong></div>
+      <div>🎟️ <strong>Actividades (${acts.length}):</strong><br>${acts.map(a=>`&nbsp;&nbsp;• ${a.item} (Bs${a.precioLocal} c/u)`).join('<br>')}<br>Total actividades: <strong>Bs ${ca}</strong></div>
+      ${mejora?`<div style="color:var(--accent);margin-top:0.4rem;font-weight:500;">${mejora}</div>`:''}</div>
+      <div class="result-total"><div class="big">💰 Bs ${pres}</div></div>
+      <button class="btn-send email" onclick="enviarPresupuesto(\`${planText.replace(/`/g,'\\`')}\`,${pres},'email')">📧 Enviar por Correo</button>
+      <button class="btn-send whatsapp" onclick="enviarPresupuesto(\`${planText.replace(/`/g,'\\`')}\`,${pres},'whatsapp')">💬 Enviar por WhatsApp</button>
+      ${generateReviewSection(planId)}`;
+    setRating(planId,0);
+  }
+
+  document.getElementById('tabNav').addEventListener('click',function(e){
+    const btn=e.target.closest('.tab-btn');if(!btn)return;
+    document.querySelectorAll('#tabNav .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#exploreModal .category-section').forEach(s=>s.style.display='none');
+    document.getElementById('sec-'+btn.dataset.tab).style.display='block';
+  });
+
+  document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');}));
+  document.getElementById('choiceModal').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
+
+  function init(){
+    createClouds();
+    updateUserUI();
+  }
+  init();
 </script>
 </body>
 </html>
